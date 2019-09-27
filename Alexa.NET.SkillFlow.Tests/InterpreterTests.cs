@@ -31,6 +31,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var result = await Interpreter.SkillFlowInterpreter.Interpret(string.Empty);
             Assert.NotNull(result);
+            Assert.Empty(result.Scenes);
         }
     }
 }

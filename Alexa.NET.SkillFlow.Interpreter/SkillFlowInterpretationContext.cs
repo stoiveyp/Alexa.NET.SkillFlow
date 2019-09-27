@@ -1,4 +1,6 @@
-﻿namespace Alexa.NET.SkillFlow.Interpreter
+﻿using System;
+
+namespace Alexa.NET.SkillFlow.Interpreter
 {
     public class SkillFlowInterpretationContext
     {
