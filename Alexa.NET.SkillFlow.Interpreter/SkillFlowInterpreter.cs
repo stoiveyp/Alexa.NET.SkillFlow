@@ -10,57 +10,55 @@ using Alexa.NET.SkillFlow.Interpreter;
 
 namespace Alexa.NET.SkillFlow
 {
-    public static class SkillFlowInterpreter
+    public class SkillFlowInterpreter
     {
-        public static List<ISkillFlowInterpreter> Interpreters = new List<ISkillFlowInterpreter>()
+        private SkillFlowInterpretationOptions _options;
+
+        public SkillFlowInterpreter(SkillFlowInterpretationOptions options,
+            params ISkillFlowInterpreter[] customInterpreters)
+        {
+            Interpreters.AddRange(customInterpreters);
+            _options = options ?? new SkillFlowInterpretationOptions();
+        }
+
+        public SkillFlowInterpreter(params ISkillFlowInterpreter[] customInterpreters):this(new SkillFlowInterpretationOptions(),customInterpreters)
+        {
+            
+        }
+
+        public List<ISkillFlowInterpreter> Interpreters = new List<ISkillFlowInterpreter>()
         {
             new SceneInterpreter()
         };
 
-        public static Task<Story> Interpret(string input, CancellationToken token = default)
-        {
-            return Interpret(input, new SkillFlowInterpretationOptions(), token);
-        }
-
-        public static Task<Story> Interpret(string input, SkillFlowInterpretationOptions options, CancellationToken token = default)
+        public Task<Story> Interpret(string input, CancellationToken token = default)
         {
             if (input == null)
             {
                 throw new ArgumentNullException(nameof(input));
             }
             var ms = new MemoryStream(Encoding.UTF8.GetBytes(input));
-            return Interpret(ms, options, token);
+            return Interpret(ms, token);
         }
 
-        public static Task<Story> Interpret(Stream input, CancellationToken token = default)
+        public Task<Story> Interpret(Stream input, CancellationToken token = default)
         {
-            return Interpret(input, new SkillFlowInterpretationOptions(), token);
+            return Interpret(PipeReader.Create(input), token).AsTask();
         }
 
-        public static Task<Story> Interpret(Stream input, SkillFlowInterpretationOptions options, CancellationToken token = default)
+        public async ValueTask<Story> Interpret(PipeReader reader, CancellationToken token = default)
         {
-            return Interpret(PipeReader.Create(input), options, token).AsTask();
-        }
-
-        public static ValueTask<Story> Interpret(PipeReader reader, CancellationToken token = default)
-        {
-            return Interpret(reader, new SkillFlowInterpretationOptions(), token);
-        }
-
-        public static async ValueTask<Story> Interpret(PipeReader reader, SkillFlowInterpretationOptions options, CancellationToken token = default)
-        {
-            options = options ?? new SkillFlowInterpretationOptions();
-
             if (reader == null)
             {
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            var context = new SkillFlowInterpretationContext(options);
+            var context = new SkillFlowInterpretationContext(_options);
             var osb = new StringBuilder();
 
             while (true)
             {
+                osb.Clear();
                 var readResult = await reader.ReadAsync(token);
                 var buffer = readResult.Buffer;
                 if (buffer.IsEmpty && readResult.IsCompleted)
@@ -69,11 +67,21 @@ namespace Alexa.NET.SkillFlow
                 }
 
                 var containsLineBreak = false;
+                var first = true;
                 foreach (var segment in buffer)
                 {
                     var segmentString = Encoding.UTF8.GetString(segment.ToArray());
-                    osb.Append(segmentString);
-                    if (segmentString.Contains(options.LineEnding))
+                    if (first)
+                    {
+                        first = false;
+                        osb.Append(segmentString.TrimStart());
+                    }
+                    else
+                    {
+                        osb.Append(segmentString);
+                    }
+
+                    if (segmentString.Contains(_options.LineEnding))
                     {
                         containsLineBreak = true;
                         break;
@@ -104,6 +112,21 @@ namespace Alexa.NET.SkillFlow
                 {
                     var usedPosition = interpreter.Interpret(candidate, context);
 
+                    if (usedPosition == 0)
+                    {
+                        context.InterpretAttempts++;
+                    }
+                    else
+                    {
+                        context.InterpretAttempts = 0;
+                    }
+
+                    if (context.InterpretAttempts >= context.Options.MaximumInterpretAttempts)
+                    {
+                        throw new InvalidSkillFlowException("Reached maximum interpretation attempts",context.LineNumber);
+                    }
+
+
                     if (containsLineBreak && usedPosition == candidate.Length)
                     {
                         usedPosition += context.Options.LineEnding.Length;
@@ -120,6 +143,10 @@ namespace Alexa.NET.SkillFlow
 
                 if (readResult.IsCompleted)
                 {
+                    if (context.InterpretAttempts > 0)
+                    {
+                        throw new InvalidSkillFlowException($"Unable to process skill flow", context.LineNumber);
+                    }
                     break;
                 }
             }

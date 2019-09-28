@@ -12,5 +12,6 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public SkillFlowInterpretationOptions Options { get; }
         public Story Story { get; }
         public int LineNumber { get; set; }
+        public int InterpretAttempts { get; set; }
     }
 }
