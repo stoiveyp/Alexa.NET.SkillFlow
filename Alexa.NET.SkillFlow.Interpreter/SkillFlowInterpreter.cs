@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.IO.Pipelines;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Alexa.NET.SkillFlow.Interpreter;
@@ -55,10 +56,12 @@ namespace Alexa.NET.SkillFlow
 
             var context = new SkillFlowInterpretationContext(_options);
             var osb = new StringBuilder();
+            var lineStart = true;
 
             while (true)
             {
                 osb.Clear();
+                var originalLineStart = lineStart;
                 var readResult = await reader.ReadAsync(token);
                 var buffer = readResult.Buffer;
                 if (buffer.IsEmpty && readResult.IsCompleted)
@@ -67,17 +70,18 @@ namespace Alexa.NET.SkillFlow
                 }
 
                 var containsLineBreak = false;
-                var firstNonWhitespace = false;
                 foreach (var segment in buffer)
                 {
                     var segmentString = Encoding.UTF8.GetString(segment.ToArray());
-                    if (!firstNonWhitespace)
+                    if (lineStart)
                     {
+                        var originalLength = segmentString.Length;
                         segmentString = segmentString.TrimStart();
                         if (segmentString.Length > 0)
                         {
                             osb.Append(segmentString);
-                            firstNonWhitespace = true;
+                            reader.AdvanceTo(readResult.Buffer.GetPosition(originalLength - segmentString.Length));
+                            lineStart = false;
                         }
                     }
                     else
@@ -95,6 +99,7 @@ namespace Alexa.NET.SkillFlow
                 var candidate = osb.ToString();
                 if (!readResult.IsCompleted && !containsLineBreak)
                 {
+                    lineStart = originalLineStart;
                     reader.AdvanceTo(buffer.Start, buffer.End);
                     continue;
                 }
@@ -134,6 +139,7 @@ namespace Alexa.NET.SkillFlow
                     if (containsLineBreak && usedPosition == candidate.Length)
                     {
                         usedPosition += context.Options.LineEnding.Length;
+                        lineStart = true;
                     }
 
                     used = buffer.GetPosition(usedPosition);
