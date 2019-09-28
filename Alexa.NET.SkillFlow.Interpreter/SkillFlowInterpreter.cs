@@ -145,7 +145,7 @@ namespace Alexa.NET.SkillFlow
                 {
                     if (context.InterpretAttempts > 0)
                     {
-                        throw new InvalidSkillFlowException($"Unable to process skill flow", context.LineNumber);
+                        throw new InvalidSkillFlowException($"Incomplete skill flow", context.LineNumber);
                     }
                     break;
                 }
