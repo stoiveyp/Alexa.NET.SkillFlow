@@ -67,14 +67,18 @@ namespace Alexa.NET.SkillFlow
                 }
 
                 var containsLineBreak = false;
-                var first = true;
+                var firstNonWhitespace = false;
                 foreach (var segment in buffer)
                 {
                     var segmentString = Encoding.UTF8.GetString(segment.ToArray());
-                    if (first)
+                    if (!firstNonWhitespace)
                     {
-                        first = false;
-                        osb.Append(segmentString.TrimStart());
+                        segmentString = segmentString.TrimStart();
+                        if (segmentString.Length > 0)
+                        {
+                            osb.Append(segmentString);
+                            firstNonWhitespace = true;
+                        }
                     }
                     else
                     {

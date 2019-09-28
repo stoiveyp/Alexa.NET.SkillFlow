@@ -45,6 +45,15 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
+        public async Task IgnoresStartingWhiteSpace()
+        {
+            var story = await new SkillFlowInterpreter().Interpret("    @scene test");
+            var scene = Assert.Single(story.Scenes);
+            Assert.Equal("test", scene.Key);
+            Assert.Equal("test", scene.Value.Name);
+        }
+
+        [Fact]
         public async Task ThrowsOnInvalidSkillFlow()
         {
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowException>(() => new SkillFlowInterpreter().Interpret($"@scene test {Environment.NewLine} ~"));
