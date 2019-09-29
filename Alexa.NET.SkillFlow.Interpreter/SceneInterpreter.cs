@@ -14,17 +14,17 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             if (candidate.Length <= 7)
             {
-                throw new InvalidSkillFlowException($"No scene name", context.LineNumber);
+                throw new InvalidSkillFlowDefinitionException($"No scene name", context.LineNumber);
             }
 
             var sceneName = candidate.Substring(7);
 
             if (!sceneName.All(c => char.IsLetterOrDigit(c) || c == ' '))
             {
-                throw new InvalidSkillFlowException($"Invalid scene name '{sceneName}'", context.LineNumber);
+                throw new InvalidSkillFlowDefinitionException($"Invalid scene name '{sceneName}'", context.LineNumber);
             }
 
-            context.Story.Scenes.Add(sceneName, new Scene { Name = sceneName });
+            context.CurrentComponent.Add(new Scene { Name = sceneName });
             return 7 + sceneName.Length;
         }
     }

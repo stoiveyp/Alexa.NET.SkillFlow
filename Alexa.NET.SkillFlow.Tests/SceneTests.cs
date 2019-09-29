@@ -26,14 +26,14 @@ namespace Alexa.NET.SkillFlow.Tests
         public void ThrowsOnNoName()
         {
             var interpreter = new SceneInterpreter();
-            Assert.Throws<InvalidSkillFlowException>(() => interpreter.Interpret("@scene", DefaultContext));
+            Assert.Throws<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene", DefaultContext));
         }
 
         [Fact]
         public void ThrowsOnInvalidName()
         {
             var interpreter = new SceneInterpreter();
-            Assert.Throws<InvalidSkillFlowException>(() => interpreter.Interpret("@scene &&", DefaultContext));
+            Assert.Throws<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene &&", DefaultContext));
         }
 
         [Fact]

@@ -4,9 +4,10 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Interpreter
 {
-    public class InvalidSkillFlowException:Exception
+    public class InvalidSkillFlowDefinitionException:Exception
     {
-        public InvalidSkillFlowException(string message, int lineNumber):base(message)
+        public InvalidSkillFlowDefinitionException(string message, int lineNumber)
+        :base(message)
         {
             LineNumber = lineNumber;
         }

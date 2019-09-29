@@ -45,18 +45,25 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public async Task IgnoresStartingWhiteSpace()
+        public async Task AddOccursOnCorrectTab()
         {
-            var story = await new SkillFlowInterpreter().Interpret("    @scene test");
+            var story = await new SkillFlowInterpreter().Interpret("\t@scene test");
             var scene = Assert.Single(story.Scenes);
             Assert.Equal("test", scene.Key);
             Assert.Equal("test", scene.Value.Name);
         }
 
         [Fact]
+        public async Task ThrowsOnIncorrectTab()
+        {
+            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret("\t\tscene test"));
+            Assert.Equal(1,ex.LineNumber);
+        }
+
+        [Fact]
         public async Task ThrowsOnInvalidSkillFlow()
         {
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowException>(() => new SkillFlowInterpreter().Interpret($"@scene test {Environment.NewLine} ~"));
+            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret($"@scene test {Environment.NewLine} ~"));
             Assert.Equal(2, ex.LineNumber);
         }
 
@@ -64,21 +71,8 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task ThrowWhenInterpreterDoesntMove()
         {
             var interpreter = new SkillFlowInterpreter(new NoMoveInterpreter());
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
+            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
             Assert.Equal(2, ex.LineNumber);
-        }
-    }
-
-    public class NoMoveInterpreter : ISkillFlowInterpreter
-    {
-        public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
-        {
-            return candidate.StartsWith('~');
-        }
-
-        public int Interpret(string candidate, SkillFlowInterpretationContext context)
-        {
-            return 0;
         }
     }
 }

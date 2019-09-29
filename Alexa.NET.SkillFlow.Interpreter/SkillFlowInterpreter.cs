@@ -22,9 +22,9 @@ namespace Alexa.NET.SkillFlow
             _options = options ?? new SkillFlowInterpretationOptions();
         }
 
-        public SkillFlowInterpreter(params ISkillFlowInterpreter[] customInterpreters):this(new SkillFlowInterpretationOptions(),customInterpreters)
+        public SkillFlowInterpreter(params ISkillFlowInterpreter[] customInterpreters) : this(new SkillFlowInterpretationOptions(), customInterpreters)
         {
-            
+
         }
 
         public List<ISkillFlowInterpreter> Interpreters = new List<ISkillFlowInterpreter>()
@@ -119,7 +119,15 @@ namespace Alexa.NET.SkillFlow
 
                 if (interpreter != null)
                 {
-                    var usedPosition = interpreter.Interpret(candidate, context);
+                    var usedPosition = 0;
+                    try
+                    {
+                        usedPosition = interpreter.Interpret(candidate, context);
+                    }
+                    catch (InvalidSkillFlowException invalidSkillFlow)
+                    {
+                        throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
+                    }
 
                     if (usedPosition == 0)
                     {
@@ -132,7 +140,7 @@ namespace Alexa.NET.SkillFlow
 
                     if (context.InterpretAttempts >= context.Options.MaximumInterpretAttempts)
                     {
-                        throw new InvalidSkillFlowException("Reached maximum interpretation attempts",context.LineNumber);
+                        throw new InvalidSkillFlowDefinitionException("Reached maximum interpretation attempts", context.LineNumber);
                     }
 
 
@@ -146,7 +154,7 @@ namespace Alexa.NET.SkillFlow
                 }
                 else
                 {
-                    throw new InvalidSkillFlowException($"Unable to process skill flow", context.LineNumber);
+                    throw new InvalidSkillFlowDefinitionException($"Unable to process skill flow", context.LineNumber);
                 }
 
                 reader.AdvanceTo(used, examined);
@@ -155,7 +163,7 @@ namespace Alexa.NET.SkillFlow
                 {
                     if (context.InterpretAttempts > 0)
                     {
-                        throw new InvalidSkillFlowException($"Incomplete skill flow", context.LineNumber);
+                        throw new InvalidSkillFlowDefinitionException($"Incomplete skill flow", context.LineNumber);
                     }
                     break;
                 }
