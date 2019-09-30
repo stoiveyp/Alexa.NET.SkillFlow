@@ -4,17 +4,18 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Scene:ISkillFlowComponent
+    public class Text:ISkillFlowComponent
     {
-        public Scene() { }
+        public Text() { }
 
-        public Scene(string name)
+        public Text(string content)
         {
-            Name = name;
+            Content = content;
         }
 
-        public string Name { get; set; }
-        public string Type => nameof(Scene);
+        public string Type => nameof(Text);
+
+        public string Content { get; set; }
         public void Add(ISkillFlowComponent component)
         {
             throw this.InvalidComponent(component);

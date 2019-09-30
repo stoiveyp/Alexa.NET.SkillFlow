@@ -58,7 +58,6 @@ namespace Alexa.NET.SkillFlow
             var context = new SkillFlowInterpretationContext(_options);
             var osb = new StringBuilder();
             var currentLevel = 0;
-            var lineStart = true;
 
             while (true)
             {
@@ -97,7 +96,7 @@ namespace Alexa.NET.SkillFlow
 
                 context.LineNumber++;
 
-                if (lineStart)
+                if (context.BeginningOfLine)
                 {
                     currentLevel = 1;
                     for (var checkPos = 0; checkPos < osb.Length; checkPos++)
@@ -157,11 +156,11 @@ namespace Alexa.NET.SkillFlow
                     if (hitLineBreak && usedPosition == candidate.Length)
                     {
                         usedPosition += context.Options.LineEnding.Length;
-                        lineStart = true;
+                        context.BeginningOfLine = true;
                     }
                     else
                     {
-                        lineStart = false;
+                        context.BeginningOfLine = false;
                     }
 
                     used = buffer.GetPosition(usedPosition);
