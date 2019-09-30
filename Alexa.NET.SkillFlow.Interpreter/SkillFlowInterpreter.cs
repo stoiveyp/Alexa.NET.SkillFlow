@@ -178,7 +178,7 @@ namespace Alexa.NET.SkillFlow
                 }
                 else
                 {
-                    throw new InvalidSkillFlowDefinitionException($"Unable to process skill flow", context.LineNumber);
+                    throw new InvalidSkillFlowDefinitionException($"Unrecognised skill flow: " + candidate, context.LineNumber);
                 }
 
                 reader.AdvanceTo(used, examined);
