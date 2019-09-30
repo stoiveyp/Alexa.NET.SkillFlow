@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Xml;
 using Alexa.NET.SkillFlow.Interpreter;
 
 namespace Alexa.NET.SkillFlow
@@ -56,12 +57,12 @@ namespace Alexa.NET.SkillFlow
 
             var context = new SkillFlowInterpretationContext(_options);
             var osb = new StringBuilder();
+            var currentLevel = 0;
             var lineStart = true;
 
             while (true)
             {
                 osb.Clear();
-                var originalLineStart = lineStart;
                 var readResult = await reader.ReadAsync(token);
                 var buffer = readResult.Buffer;
                 if (buffer.IsEmpty && readResult.IsCompleted)
@@ -69,50 +70,59 @@ namespace Alexa.NET.SkillFlow
                     break;
                 }
 
-                var containsLineBreak = false;
+                var examined = buffer.End;
+                var hitLineBreak = false;
+
                 foreach (var segment in buffer)
                 {
                     var segmentString = Encoding.UTF8.GetString(segment.ToArray());
-                    if (lineStart)
-                    {
-                        var originalLength = segmentString.Length;
-                        segmentString = segmentString.TrimStart();
-                        if (segmentString.Length > 0)
-                        {
-                            osb.Append(segmentString);
-                            reader.AdvanceTo(readResult.Buffer.GetPosition(originalLength - segmentString.Length));
-                            lineStart = false;
-                        }
-                    }
-                    else
-                    {
-                        osb.Append(segmentString);
-                    }
 
                     if (segmentString.Contains(_options.LineEnding))
                     {
-                        containsLineBreak = true;
+                        var cutoff = segmentString.IndexOf(context.Options.LineEnding);
+                        osb.Append(segmentString.Substring(0, cutoff));
+                        examined = buffer.GetPosition(osb.Length);
+                        hitLineBreak = true;
                         break;
                     }
+
+                    osb.Append(segmentString);
                 }
 
-                var candidate = osb.ToString();
-                if (!readResult.IsCompleted && !containsLineBreak)
+                if (!readResult.IsCompleted && !hitLineBreak)
                 {
-                    lineStart = originalLineStart;
                     reader.AdvanceTo(buffer.Start, buffer.End);
                     continue;
                 }
 
-                var examined = buffer.End;
-                if (containsLineBreak)
+                context.LineNumber++;
+
+                if (lineStart)
                 {
-                    var cutoff = candidate.IndexOf(context.Options.LineEnding);
-                    candidate = candidate.Substring(0, cutoff);
-                    examined = buffer.GetPosition(cutoff);
+                    currentLevel = 1;
+                    for (var checkPos = 0; checkPos < osb.Length; checkPos++)
+                    {
+                        if (osb[checkPos] == '\t')
+                        {
+                            currentLevel++;
+                        }
+                        else
+                        {
+                            if (currentLevel > context.Components.Count + 1)
+                            {
+                                throw new InvalidSkillFlowDefinitionException("Out of place indent", context.LineNumber);
+                            }
+
+                            while (currentLevel < context.Components.Count)
+                            {
+                                context.Components.Pop();
+                            }
+                        }
+                    }
                 }
 
-                context.LineNumber++;
+                currentLevel--;
+                var candidate = osb.ToString(currentLevel, osb.Length - currentLevel);
 
                 var used = buffer.Start;
                 var interpreter = Interpreters.FirstOrDefault(i => i.CanInterpret(candidate, context));
@@ -144,10 +154,14 @@ namespace Alexa.NET.SkillFlow
                     }
 
 
-                    if (containsLineBreak && usedPosition == candidate.Length)
+                    if (hitLineBreak && usedPosition == candidate.Length)
                     {
                         usedPosition += context.Options.LineEnding.Length;
                         lineStart = true;
+                    }
+                    else
+                    {
+                        lineStart = false;
                     }
 
                     used = buffer.GetPosition(usedPosition);

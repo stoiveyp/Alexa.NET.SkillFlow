@@ -56,8 +56,9 @@ namespace Alexa.NET.SkillFlow.Tests
         [Fact]
         public async Task ThrowsOnIncorrectTab()
         {
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret("\t\tscene test"));
+            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret("\t\t@scene test"));
             Assert.Equal(1,ex.LineNumber);
+            Assert.Equal("Out of place indent",ex.Message);
         }
 
         [Fact]
