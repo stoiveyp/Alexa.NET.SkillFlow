@@ -1,0 +1,52 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Alexa.NET.SkillFlow.Interpreter;
+using Xunit;
+
+namespace Alexa.NET.SkillFlow.Tests
+{
+    public class ScenePropertyTests
+    {
+        [Fact]
+        public void CorrectlyIdentifiesSyntax()
+        {
+            var interpreter = new ScenePropertyInterpreter();
+            Assert.True(interpreter.CanInterpret("*say",new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
+        }
+
+        [Fact]
+        public void CorrectlyIdentifiesFalseSyntax()
+        {
+            var interpreter = new ScenePropertyInterpreter();
+            Assert.False(interpreter.CanInterpret("*nosay", new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
+        }
+
+        [Fact]
+        public void SetSayCorrectly()
+        {
+            var scene = new Scene("test");
+            var say = new Text("say");
+            scene.Add(say);
+            Assert.Equal(say,scene.Say);
+        }
+
+        [Fact]
+        public void SetRepromptCorrectly()
+        {
+            var scene = new Scene("test");
+            var reprompt = new Text("reprompt");
+            scene.Add(reprompt);
+            Assert.Equal(reprompt, scene.Reprompt);
+        }
+
+        [Fact]
+        public void SetRecapCorrectly()
+        {
+            var scene = new Scene("test");
+            var recap = new Text("recap");
+            scene.Add(recap);
+            Assert.Equal(recap, scene.Recap);
+        }
+    }
+}

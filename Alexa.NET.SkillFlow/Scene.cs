@@ -17,7 +17,26 @@ namespace Alexa.NET.SkillFlow
         public string Type => nameof(Scene);
         public void Add(ISkillFlowComponent component)
         {
+            if (component is Text text)
+            {
+                switch (text.TextType)
+                {
+                    case "say":
+                        this.Say = text;
+                        return;
+                    case "reprompt":
+                        this.Reprompt = text;
+                        return;
+                    case "recap":
+                        this.Recap = text;
+                        return;
+                }
+            }
             throw this.InvalidComponent(component);
         }
+
+        public Text Say { get; set; }
+        public Text Reprompt { get; set; }
+        public Text Recap { get; set; }
     }
 }

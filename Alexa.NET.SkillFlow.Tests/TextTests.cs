@@ -25,11 +25,11 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public void ContentSetCorrectly()
+        public void TextTypeSetCorrectly()
         {
             var testText = "test text";
             var text = new Text(testText);
-            Assert.Equal(testText, text.Content);
+            Assert.Equal(testText, text.TextType);
         }
     }
 }
