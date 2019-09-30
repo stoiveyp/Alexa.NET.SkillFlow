@@ -7,15 +7,28 @@ namespace Alexa.NET.SkillFlow.Interpreter
 {
     public class ScenePropertyInterpreter : ISkillFlowInterpreter
     {
-        readonly string[] CaptureWord = { "recap", "say", "reprompt" };
+        readonly string[] TextWords = { "recap", "say", "reprompt" };
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return candidate[0] == '*' && CaptureWord.Contains(candidate.Substring(1));
+            var property = candidate.Substring(1);
+            return candidate[0] == '*' &&
+                   (TextWords.Contains(property)
+                    || candidate == "show"
+                    || candidate == "then");
+
+
         }
 
         public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return (candidate.Length,new Text(candidate.Substring(1)));
+            var property = candidate.Substring(1);
+            switch (property)
+            {
+                case "show":
+                    return (candidate.Length,new Visual());
+                default:
+                    return (candidate.Length, new Text(candidate.Substring(1)));
+            }
         }
     }
 }

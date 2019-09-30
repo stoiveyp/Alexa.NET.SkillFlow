@@ -9,14 +9,14 @@ namespace Alexa.NET.SkillFlow.Tests
     public class ScenePropertyTests
     {
         [Fact]
-        public void CorrectlyIdentifiesSyntax()
+        public void CorrectlyIdentifiesText()
         {
             var interpreter = new ScenePropertyInterpreter();
             Assert.True(interpreter.CanInterpret("*say",new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
         }
 
         [Fact]
-        public void CorrectlyIdentifiesFalseSyntax()
+        public void CorrectlyIdentifiesFalseText()
         {
             var interpreter = new ScenePropertyInterpreter();
             Assert.False(interpreter.CanInterpret("*nosay", new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
@@ -47,6 +47,21 @@ namespace Alexa.NET.SkillFlow.Tests
             var recap = new Text("recap");
             scene.Add(recap);
             Assert.Equal(recap, scene.Recap);
+        }
+
+        [Fact]
+        public void IdentifiesShow()
+        {
+            var interpreter = new ScenePropertyInterpreter();
+            Assert.True(interpreter.CanInterpret("*say", new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
+        }
+
+        [Fact]
+        public void ShowReturnsVisual()
+        {
+            var interpreter = new ScenePropertyInterpreter();
+            var result = interpreter.Interpret("*show", new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
+            Assert.IsType<Visual>(result.Component);
         }
     }
 }
