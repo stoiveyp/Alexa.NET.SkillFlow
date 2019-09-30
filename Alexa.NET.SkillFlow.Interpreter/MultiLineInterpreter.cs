@@ -13,7 +13,11 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return (candidate.Length,new Text(candidate));
+            if (candidate == "||")
+            {
+                return (candidate.Length,new Variation());
+            }
+            return (candidate.Length,new TextLine(candidate));
         }
     }
 }

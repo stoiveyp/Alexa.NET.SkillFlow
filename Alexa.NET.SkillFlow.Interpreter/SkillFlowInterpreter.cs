@@ -30,7 +30,9 @@ namespace Alexa.NET.SkillFlow
 
         public List<ISkillFlowInterpreter> Interpreters = new List<ISkillFlowInterpreter>()
         {
-            new SceneInterpreter()
+            new SceneInterpreter(),
+            new ScenePropertyInterpreter(),
+            new MultiLineInterpreter()
         };
 
         public Task<Story> Interpret(string input, CancellationToken token = default)
