@@ -11,10 +11,9 @@ namespace Alexa.NET.SkillFlow.Interpreter
             return context.BeginningOfLine;
         }
 
-        public int Interpret(string candidate, SkillFlowInterpretationContext context)
+        public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            context.CurrentComponent.Add(new Text(candidate));
-            return candidate.Length;
+            return (candidate.Length,new Text(candidate));
         }
     }
 }

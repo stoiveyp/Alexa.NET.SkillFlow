@@ -41,18 +41,29 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var interpreter = new SceneInterpreter();
             var newIndex = interpreter.Interpret("@scene test", DefaultContext);
-            Assert.Equal(11, newIndex);
+            Assert.Equal(11, newIndex.Used);
         }
 
         [Fact]
-        public void AddsSceneToStory()
+        public void GeneratesScene()
         {
             var interpreter = new SceneInterpreter();
             var context = DefaultContext;
-            interpreter.Interpret("@scene test", context);
-            var scene = Assert.Single(context.Story.Scenes);
-            Assert.Equal("test", scene.Key);
-            Assert.Equal("test", scene.Value.Name);
+            var result = interpreter.Interpret("@scene test", context);
+            var scene = Assert.IsType<Scene>(result.Component);
+            Assert.Equal("test", scene.Name);
+        }
+
+        [Fact]
+        public void StoryAddsScene()
+        {
+            var sceneName = "test";
+            var story = new Story();
+            var scene = new Scene(sceneName);
+            story.Add(scene);
+            var single = Assert.Single(story.Scenes);
+            Assert.Equal(sceneName,single.Key);
+            Assert.Equal(scene,single.Value);
         }
     }
 }

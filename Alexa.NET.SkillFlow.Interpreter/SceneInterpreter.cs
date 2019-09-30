@@ -10,7 +10,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
             return candidate.StartsWith("@scene");
         }
 
-        public int Interpret(string candidate, SkillFlowInterpretationContext context)
+        public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
         {
             if (candidate.Length <= 7)
             {
@@ -24,8 +24,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 throw new InvalidSkillFlowDefinitionException($"Invalid scene name '{sceneName}'", context.LineNumber);
             }
 
-            context.CurrentComponent.Add(new Scene { Name = sceneName });
-            return 7 + sceneName.Length;
+            return (7 + sceneName.Length, new Scene(sceneName));
         }
     }
 }

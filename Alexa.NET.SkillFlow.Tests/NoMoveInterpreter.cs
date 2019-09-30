@@ -9,9 +9,9 @@ namespace Alexa.NET.SkillFlow.Tests
             return candidate.StartsWith('~');
         }
 
-        public int Interpret(string candidate, SkillFlowInterpretationContext context)
+        public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return 0;
+            return (0, null);
         }
     }
 }

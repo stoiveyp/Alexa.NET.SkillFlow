@@ -116,6 +116,8 @@ namespace Alexa.NET.SkillFlow
                             {
                                 context.Components.Pop();
                             }
+
+                            break;
                         }
                     }
                 }
@@ -131,7 +133,12 @@ namespace Alexa.NET.SkillFlow
                     var usedPosition = 0;
                     try
                     {
-                        usedPosition = interpreter.Interpret(candidate, context);
+                        var result = interpreter.Interpret(candidate, context);
+                        usedPosition = result.Used;
+                        if (result.Used > 0)
+                        {
+                            context.CurrentComponent.Add(result.Component);
+                        }
                     }
                     catch (InvalidSkillFlowException invalidSkillFlow)
                     {
