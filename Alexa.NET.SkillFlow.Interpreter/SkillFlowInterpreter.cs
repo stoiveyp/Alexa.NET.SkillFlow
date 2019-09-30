@@ -140,6 +140,7 @@ namespace Alexa.NET.SkillFlow
                         if (result.Used > 0)
                         {
                             context.CurrentComponent.Add(result.Component);
+                            context.Components.Push(result.Component);
                         }
                     }
                     catch (InvalidSkillFlowException invalidSkillFlow)
@@ -172,6 +173,7 @@ namespace Alexa.NET.SkillFlow
                         context.BeginningOfLine = false;
                     }
 
+                    usedPosition += currentLevel;
                     used = buffer.GetPosition(usedPosition);
                 }
                 else

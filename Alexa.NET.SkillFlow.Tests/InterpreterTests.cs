@@ -75,5 +75,18 @@ namespace Alexa.NET.SkillFlow.Tests
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
             Assert.Equal(2, ex.LineNumber);
         }
+
+        [Fact]
+        public async Task MultilineAddsToCorrectComponent()
+        {
+            var interpreter = new SkillFlowInterpreter();
+            var story = await interpreter.Interpret(string.Join(Environment.NewLine, "@scene test",
+                "\t*say","\t\twibble","\t\t||","\t\ttest"));
+            var scene = Assert.Single(story.Scenes).Value;
+            Assert.Null(scene.Reprompt);
+            Assert.Null(scene.Recap);
+            Assert.NotNull(scene.Say);
+            Assert.Equal(2,scene.Say.Content.Count);
+        }
     }
 }

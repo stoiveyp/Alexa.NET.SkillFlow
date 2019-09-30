@@ -7,7 +7,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
 {
     public class ScenePropertyInterpreter : ISkillFlowInterpreter
     {
-        string[] CaptureWord = new[] { "recap", "say", "reprompt" };
+        readonly string[] CaptureWord = { "recap", "say", "reprompt" };
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
             return candidate[0] == '*' && CaptureWord.Contains(candidate.Substring(1));
