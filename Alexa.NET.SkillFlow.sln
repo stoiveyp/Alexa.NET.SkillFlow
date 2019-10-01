@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29318.209
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow", "Alexa.NET.SkillFlow\Alexa.NET.SkillFlow.csproj", "{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.Interpreter", "Alexa.NET.SkillFlow.Interpreter\Alexa.NET.SkillFlow.Interpreter.csproj", "{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alexa.NET.SkillFlow.Tests", "Alexa.NET.SkillFlow.Tests\Alexa.NET.SkillFlow.Tests.csproj", "{B5251AD6-B1A8-48D5-940A-7399931420B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Release|Any CPU.Build.0 = Release|Any CPU
+		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {211CF22A-7B0D-4B53-9CDC-A43D573F2024}
+	EndGlobalSection
+EndGlobal
