@@ -32,7 +32,8 @@ namespace Alexa.NET.SkillFlow
         {
             new SceneInterpreter(),
             new ScenePropertyInterpreter(),
-            new MultiLineInterpreter()
+            new MultiLineInterpreter(),
+            new VisualPropertyInterpreter()
         };
 
         public Task<Story> Interpret(string input, CancellationToken token = default)
@@ -73,7 +74,6 @@ namespace Alexa.NET.SkillFlow
 
                 var examined = buffer.End;
                 var hitLineBreak = false;
-
                 foreach (var segment in buffer)
                 {
                     var segmentString = Encoding.UTF8.GetString(segment.ToArray());
@@ -163,9 +163,13 @@ namespace Alexa.NET.SkillFlow
                     }
 
 
-                    if (hitLineBreak && usedPosition == candidate.Length)
+                    if (usedPosition == candidate.Length)
                     {
-                        usedPosition += context.Options.LineEnding.Length;
+                        if (!readResult.IsCompleted)
+                        {
+                            usedPosition += context.Options.LineEnding.Length;
+                        }
+
                         context.BeginningOfLine = true;
                     }
                     else
