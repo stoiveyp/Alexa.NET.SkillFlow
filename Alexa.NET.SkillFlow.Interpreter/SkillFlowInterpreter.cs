@@ -128,73 +128,61 @@ namespace Alexa.NET.SkillFlow
                 var candidate = osb.ToString(currentLevel, osb.Length - currentLevel);
 
                 var used = buffer.Start;
-                var interpreter = Interpreters.FirstOrDefault(i => i.CanInterpret(candidate, context));
-
-                if (interpreter != null)
+                while (candidate.Any())
                 {
-                    var usedPosition = 0;
-                    try
-                    {
-                        var result = interpreter.Interpret(candidate, context);
-                        usedPosition = result.Used;
-                        if (result.Used > 0)
-                        {
-                            context.CurrentComponent.Add(result.Component);
-                            context.Components.Push(result.Component);
-                        }
-                    }
-                    catch (InvalidSkillFlowException invalidSkillFlow)
-                    {
-                        throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
-                    }
+                    var interpreter = Interpreters.FirstOrDefault(i => i.CanInterpret(candidate, context));
 
-                    if (usedPosition == 0)
+                    if (interpreter != null)
                     {
-                        context.InterpretAttempts++;
+                        var usedPosition = 0;
+                        try
+                        {
+                            var result = interpreter.Interpret(candidate, context);
+                            usedPosition = result.Used;
+                            if (result.Used > 0)
+                            {
+                                context.CurrentComponent.Add(result.Component);
+                                context.Components.Push(result.Component);
+                            }
+                        }
+                        catch (InvalidSkillFlowException invalidSkillFlow)
+                        {
+                            throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
+                        }
+
+                        if (usedPosition == 0)
+                        {
+                            throw new InvalidSkillFlowDefinitionException("Reached maximum interpretation attempts",
+                                context.LineNumber);
+                        }
+
+                        if (usedPosition == candidate.Length)
+                        {
+                            candidate = string.Empty;
+                            if (!readResult.IsCompleted)
+                            {
+                                usedPosition += context.Options.LineEnding.Length;
+                            }
+
+                            context.BeginningOfLine = true;
+                        }
+                        else
+                        {
+                            context.BeginningOfLine = false;
+                            candidate = candidate.Substring(usedPosition);
+                        }
+
+                        usedPosition += currentLevel;
+                        used = buffer.GetPosition(usedPosition);
                     }
                     else
                     {
-                        context.InterpretAttempts = 0;
+                        throw new InvalidSkillFlowDefinitionException($"Unrecognised skill flow: " + candidate,
+                            context.LineNumber);
                     }
-
-                    if (context.InterpretAttempts >= context.Options.MaximumInterpretAttempts)
-                    {
-                        throw new InvalidSkillFlowDefinitionException("Reached maximum interpretation attempts", context.LineNumber);
-                    }
-
-
-                    if (usedPosition == candidate.Length)
-                    {
-                        if (!readResult.IsCompleted)
-                        {
-                            usedPosition += context.Options.LineEnding.Length;
-                        }
-
-                        context.BeginningOfLine = true;
-                    }
-                    else
-                    {
-                        context.BeginningOfLine = false;
-                    }
-
-                    usedPosition += currentLevel;
-                    used = buffer.GetPosition(usedPosition);
-                }
-                else
-                {
-                    throw new InvalidSkillFlowDefinitionException($"Unrecognised skill flow: " + candidate, context.LineNumber);
                 }
 
                 reader.AdvanceTo(used, examined);
-
-                if (readResult.IsCompleted)
-                {
-                    if (context.InterpretAttempts > 0)
-                    {
-                        throw new InvalidSkillFlowDefinitionException($"Incomplete skill flow", context.LineNumber);
-                    }
-                    break;
-                }
             }
 
             return context.Story;
