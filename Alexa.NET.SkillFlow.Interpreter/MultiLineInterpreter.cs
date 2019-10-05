@@ -11,13 +11,11 @@ namespace Alexa.NET.SkillFlow.Interpreter
             return context.BeginningOfLine && context.CurrentComponent is Text;
         }
 
-        public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
+        public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            if (candidate == "||")
-            {
-                return (candidate.Length,new Variation());
-            }
-            return (candidate.Length,new TextLine(candidate));
+            return candidate == "||" 
+                ? new InterpreterResult(candidate.Length,new Variation()) 
+                : new InterpreterResult(candidate.Length,new TextLine(candidate));
         }
     }
 }

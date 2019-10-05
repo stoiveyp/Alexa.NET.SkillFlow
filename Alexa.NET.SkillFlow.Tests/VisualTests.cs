@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.SkillFlow.Interpreter;
 using Xunit;
 
 namespace Alexa.NET.SkillFlow.Tests
@@ -44,6 +45,13 @@ namespace Alexa.NET.SkillFlow.Tests
             var visual = new Visual();
             visual.Add(new VisualProperty("subtitle", "test"));
             Assert.Equal("test", visual.Subtitle);
+        }
+
+        [Fact]
+        public void InterpreterCandidatesCorrectly()
+        {
+            var interpreter = new VisualPropertyInterpreter();
+            Assert.True(interpreter.CanInterpret("template:''",new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
         }
     }
 }
