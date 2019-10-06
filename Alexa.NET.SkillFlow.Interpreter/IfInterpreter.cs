@@ -8,12 +8,12 @@ namespace Alexa.NET.SkillFlow.Interpreter
     {
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            throw new NotImplementedException();
+            return candidate.Length > 5 && candidate.StartsWith("if ") && candidate.EndsWith("{");
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            throw new NotImplementedException();
+            return InterpreterResult.Empty;
         }
     }
 }
