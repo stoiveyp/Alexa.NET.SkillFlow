@@ -34,7 +34,11 @@ namespace Alexa.NET.SkillFlow
             {typeof(Scene),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new ScenePropertyInterpreter()}) },
             {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new MultiLineInterpreter()}) },
             {typeof(Visual),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new VisualPropertyInterpreter()}) },
-            {typeof(SceneInstructions),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new GoToInterpreter()}) },
+            {typeof(SceneInstructions),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
+            {
+                new GoToInterpreter(),
+                new HearInterpreter()
+            }) },
         };
 
         public Task<Story> Interpret(string input, CancellationToken token = default)
