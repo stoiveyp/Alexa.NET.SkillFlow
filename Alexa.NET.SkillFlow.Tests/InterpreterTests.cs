@@ -71,7 +71,8 @@ namespace Alexa.NET.SkillFlow.Tests
         [Fact]
         public async Task ThrowWhenInterpreterDoesntMove()
         {
-            var interpreter = new SkillFlowInterpreter(new NoMoveInterpreter());
+            var interpreter = new SkillFlowInterpreter();
+            interpreter.Interpreters[typeof(Scene)].Add(new NoMoveInterpreter());
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
             Assert.Equal(2, ex.LineNumber);
         }

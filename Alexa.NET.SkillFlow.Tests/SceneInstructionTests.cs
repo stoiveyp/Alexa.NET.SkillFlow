@@ -28,7 +28,6 @@ namespace Alexa.NET.SkillFlow.Tests
             var interpreter = new ScenePropertyInterpreter();
             var result = interpreter.Interpret("*then",
                 new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
-            Assert.Equal(5,result.Used);
             var list = Assert.IsType<SceneInstructions>(result.Component);
             Assert.Empty(list.Instructions);
         }

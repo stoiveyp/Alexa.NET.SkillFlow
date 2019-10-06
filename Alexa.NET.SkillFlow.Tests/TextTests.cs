@@ -18,14 +18,6 @@ namespace Alexa.NET.SkillFlow.Tests
             Assert.True(interpreter.CanInterpret(string.Empty, context));
         }
 
-        [Fact]
-        public void InterpreterInvalidOnPartialLine()
-        {
-            var interpreter = new MultiLineInterpreter();
-            var context = new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions());
-            context.BeginningOfLine = false;
-            Assert.False(interpreter.CanInterpret(string.Empty, context));
-        }
 
         [Fact]
         public void TextTypeSetCorrectly()

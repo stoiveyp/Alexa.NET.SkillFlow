@@ -37,14 +37,6 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public void ReturnCorrectIndex()
-        {
-            var interpreter = new SceneInterpreter();
-            var newIndex = interpreter.Interpret("@scene test", DefaultContext);
-            Assert.Equal(11, newIndex.Used);
-        }
-
-        [Fact]
         public void GeneratesScene()
         {
             var interpreter = new SceneInterpreter();

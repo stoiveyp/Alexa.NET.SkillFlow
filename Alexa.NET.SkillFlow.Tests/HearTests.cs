@@ -31,7 +31,6 @@ namespace Alexa.NET.SkillFlow.Tests
             var interpreter = new HearInterpreter();
             var result = interpreter.Interpret("hear test {",
                 new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
-            Assert.Equal(11, result.Used);
             var hear = Assert.IsType<Hear>(result.Component);
             var phrase = Assert.Single(hear.Phrases);
             Assert.Equal("test", phrase);
@@ -43,7 +42,6 @@ namespace Alexa.NET.SkillFlow.Tests
             var interpreter = new HearInterpreter();
             var result = interpreter.Interpret("hear test,do the test,testing {",
                 new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
-            Assert.Equal(31, result.Used);
             var hear = Assert.IsType<Hear>(result.Component);
             Assert.Equal(3, hear.Phrases.Count);
         }

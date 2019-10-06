@@ -14,18 +14,11 @@ namespace Alexa.NET.SkillFlow
 {
     public class SkillFlowInterpreter
     {
-        private SkillFlowInterpretationOptions _options;
+        private readonly SkillFlowInterpretationOptions _options;
 
-        public SkillFlowInterpreter(SkillFlowInterpretationOptions options,
-            params ISkillFlowInterpreter[] customInterpreters)
+        public SkillFlowInterpreter(SkillFlowInterpretationOptions options = null)
         {
-            Interpreters[typeof(Story)].AddRange(customInterpreters);
             _options = options ?? new SkillFlowInterpretationOptions();
-        }
-
-        public SkillFlowInterpreter(params ISkillFlowInterpreter[] customInterpreters) : this(new SkillFlowInterpretationOptions(), customInterpreters)
-        {
-
         }
 
         public Dictionary<Type, List<ISkillFlowInterpreter>> Interpreters = new Dictionary<Type, List<ISkillFlowInterpreter>>
@@ -65,7 +58,6 @@ namespace Alexa.NET.SkillFlow
 
             var context = new SkillFlowInterpretationContext(_options);
             var osb = new StringBuilder();
-            var currentLevel = 0;
 
             while (true)
             {
@@ -103,88 +95,61 @@ namespace Alexa.NET.SkillFlow
 
                 context.LineNumber++;
 
-                if (context.BeginningOfLine)
+
+                var currentLevel = 1;
+                for (var checkPos = 0; checkPos < osb.Length; checkPos++)
                 {
-                    currentLevel = 1;
-                    for (var checkPos = 0; checkPos < osb.Length; checkPos++)
+                    if (osb[checkPos] == '\t')
                     {
-                        if (osb[checkPos] == '\t')
+                        currentLevel++;
+                    }
+                    else
+                    {
+                        if (currentLevel > context.Components.Count + 1)
                         {
-                            currentLevel++;
+                            throw new InvalidSkillFlowDefinitionException("Out of place indent", context.LineNumber);
                         }
-                        else
+
+                        while (currentLevel < context.Components.Count)
                         {
-                            if (currentLevel > context.Components.Count + 1)
-                            {
-                                throw new InvalidSkillFlowDefinitionException("Out of place indent", context.LineNumber);
-                            }
-
-                            while (currentLevel < context.Components.Count)
-                            {
-                                context.Components.Pop();
-                            }
-
-                            break;
+                            context.Components.Pop();
                         }
+
+                        break;
                     }
                 }
+
 
                 currentLevel--;
                 var candidate = osb.ToString(currentLevel, osb.Length - currentLevel);
 
                 var used = buffer.Start;
-                while (candidate.Any())
+
+                var interpreter = Interpreters[context.CurrentComponent.GetType()].FirstOrDefault(i => i.CanInterpret(candidate, context));
+
+                if (interpreter != null)
                 {
-                    var interpreter = Interpreters[context.CurrentComponent.GetType()].FirstOrDefault(i => i.CanInterpret(candidate, context));
-
-                    if (interpreter != null)
+                    try
                     {
-                        var usedPosition = 0;
-                        try
+                        var result = interpreter.Interpret(candidate, context);
+                        if (result.Component == null)
                         {
-                            var result = interpreter.Interpret(candidate, context);
-                            usedPosition = result.Used;
-                            if (result.Used > 0)
-                            {
-                                context.CurrentComponent.Add(result.Component);
-                                context.Components.Push(result.Component);
-                            }
+                            throw new InvalidSkillFlowDefinitionException("Unable to parse", context.LineNumber);
                         }
-                        catch (InvalidSkillFlowException invalidSkillFlow)
-                        {
-                            throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
-                        }
-
-                        if (usedPosition == 0)
-                        {
-                            throw new InvalidSkillFlowDefinitionException("Reached maximum interpretation attempts",
-                                context.LineNumber);
-                        }
-
-                        if (usedPosition == candidate.Length)
-                        {
-                            candidate = string.Empty;
-                            if (!readResult.IsCompleted)
-                            {
-                                usedPosition += context.Options.LineEnding.Length;
-                            }
-
-                            context.BeginningOfLine = true;
-                        }
-                        else
-                        {
-                            context.BeginningOfLine = false;
-                            candidate = candidate.Substring(usedPosition);
-                        }
-
-                        usedPosition += currentLevel;
-                        used = buffer.GetPosition(usedPosition);
+                        context.CurrentComponent.Add(result.Component);
+                        context.Components.Push(result.Component);
                     }
-                    else
+                    catch (InvalidSkillFlowException invalidSkillFlow)
                     {
-                        throw new InvalidSkillFlowDefinitionException($"Unrecognised skill flow: " + candidate,
-                            context.LineNumber);
+                        throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
                     }
+
+                    used = buffer.GetPosition(candidate.Length + (hitLineBreak ? context.Options.LineEnding.Length : 0) + currentLevel);
+                }
+                else
+                {
+                    throw new InvalidSkillFlowDefinitionException($"Unrecognised skill flow: " + candidate,
+                        context.LineNumber);
                 }
 
                 reader.AdvanceTo(used, examined);

@@ -24,7 +24,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 throw new InvalidSkillFlowDefinitionException($"Invalid scene name '{sceneName}'", context.LineNumber);
             }
 
-            return new InterpreterResult(7 + sceneName.Length, new Scene(sceneName));
+            return new InterpreterResult(new Scene(sceneName));
         }
     }
 }
