@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Scene:ISkillFlowComponent
+    public class Scene : ISkillFlowComponent
     {
         public Scene() { }
 
@@ -23,20 +23,33 @@ namespace Alexa.NET.SkillFlow
                 {
                     case "say":
                         this.Say = text;
-                        return;
+                        break;
                     case "reprompt":
                         this.Reprompt = text;
-                        return;
+                        break;
                     case "recap":
                         this.Recap = text;
-                        return;
+                        break;
                 }
             }
-            throw this.InvalidComponent(component);
+            else if (component is Visual visual)
+            {
+                this.Visual = visual;
+            }
+            else if (component is SceneInstructions instructions)
+            {
+                this.Instructions = instructions;
+            }
+            else
+            {
+                throw this.InvalidComponent(component);
+            }
         }
 
-        public Text Say { get; set; }
-        public Text Reprompt { get; set; }
-        public Text Recap { get; set; }
+        public Text Say { get; protected set; }
+        public Text Reprompt { get; protected set; }
+        public Text Recap { get; protected set; }
+        public Visual Visual { get; protected set; }
+        public SceneInstructions Instructions { get; protected set; }
     }
 }

@@ -50,6 +50,24 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
+        public void SetVisualCorrectly()
+        {
+            var scene = new Scene("test");
+            var show = new Visual();
+            scene.Add(show);
+            Assert.Equal(show,scene.Visual);
+        }
+
+        [Fact]
+        public void SetInstructionsCorrectly()
+        {
+            var scene = new Scene("test");
+            var instruction = new SceneInstructions();
+            scene.Add(instruction);
+            Assert.Equal(instruction, scene.Instructions);
+        }
+
+        [Fact]
         public void IdentifiesShow()
         {
             var interpreter = new ScenePropertyInterpreter();

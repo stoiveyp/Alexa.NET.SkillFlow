@@ -13,8 +13,8 @@ namespace Alexa.NET.SkillFlow.Interpreter
             var property = candidate.Substring(1);
             return candidate[0] == '*' &&
                    (TextWords.Contains(property)
-                    || candidate == "show"
-                    || candidate == "then");
+                    || property == "show"
+                    || property == "then");
 
 
         }
@@ -26,6 +26,8 @@ namespace Alexa.NET.SkillFlow.Interpreter
             {
                 case "show":
                     return new InterpreterResult(candidate.Length,new Visual());
+                case "then":
+                    return new InterpreterResult(candidate.Length,new SceneInstructions());
                 default:
                     return new InterpreterResult(candidate.Length, new Text(candidate.Substring(1)));
             }
