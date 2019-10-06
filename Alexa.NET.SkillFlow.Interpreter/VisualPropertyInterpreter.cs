@@ -11,12 +11,14 @@ namespace Alexa.NET.SkillFlow.Interpreter
         private readonly string[] _validProperties = { "background", "template", "title", "subtitle" };
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return context.CurrentComponent is Visual && candidate.IndexOf(':') > -1 && candidate.IndexOfAny(quoters) > -1;
+            return context.CurrentComponent is Visual
+                   && candidate.IndexOf(':') > -1 
+                   && candidate.IndexOfAny(quoters) > -1;
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            var keyvalue = candidate.Split(new[] {':'}, 2);
+            var keyvalue = candidate.Split(new[] {':'}, 2).Select(s => s.Trim()).ToArray();
 
             if (keyvalue.Length < 2)
             {
