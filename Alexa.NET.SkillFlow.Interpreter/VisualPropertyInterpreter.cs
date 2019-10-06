@@ -30,7 +30,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
             var property = new VisualProperty(keyvalue[0], keyvalue[1].Substring(1, keyvalue[1].Length - 2));
 
-            return new InterpreterResult(candidate.Length,property);
+            return new InterpreterResult(property);
         }
     }
 }

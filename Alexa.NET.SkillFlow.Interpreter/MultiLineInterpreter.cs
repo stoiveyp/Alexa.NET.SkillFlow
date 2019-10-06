@@ -8,14 +8,14 @@ namespace Alexa.NET.SkillFlow.Interpreter
     {
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return context.BeginningOfLine;
+            return true;
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
             return candidate == "||" 
-                ? new InterpreterResult(candidate.Length,new Variation()) 
-                : new InterpreterResult(candidate.Length,new TextLine(candidate));
+                ? new InterpreterResult(new Variation()) 
+                : new InterpreterResult(new TextLine(candidate));
         }
     }
 }

@@ -31,7 +31,6 @@ namespace Alexa.NET.SkillFlow.Tests
             var interpreter = new GoToInterpreter();
             var result = interpreter.Interpret("-> test",
                 new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
-            Assert.Equal(7, result.Used);
             var instruction = Assert.IsType<GoTo>(result.Component);
             Assert.Equal("test",instruction.SceneName);
         }

@@ -11,7 +11,6 @@ namespace Alexa.NET.SkillFlow.Interpreter
             Components = new Stack<ISkillFlowComponent>();
             Story = new Story();
             Components.Push(Story);
-            BeginningOfLine = true;
         }
 
         public Story Story { get; }
@@ -21,7 +20,6 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         public int LineNumber { get; set; }
 
-        public bool BeginningOfLine { get; set; }
         public ISkillFlowComponent CurrentComponent => Components.Peek();
     }
 }

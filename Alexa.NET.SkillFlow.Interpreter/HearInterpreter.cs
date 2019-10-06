@@ -15,7 +15,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return new InterpreterResult(candidate.Length, new Hear(candidate.Substring(5, candidate.Length - 6)
+            return new InterpreterResult(new Hear(candidate.Substring(5, candidate.Length - 6)
                 .Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim())));
         }
     }

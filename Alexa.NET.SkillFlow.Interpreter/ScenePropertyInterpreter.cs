@@ -23,11 +23,11 @@ namespace Alexa.NET.SkillFlow.Interpreter
             switch (property)
             {
                 case "show":
-                    return new InterpreterResult(candidate.Length,new Visual());
+                    return new InterpreterResult(new Visual());
                 case "then":
-                    return new InterpreterResult(candidate.Length,new SceneInstructions());
+                    return new InterpreterResult(new SceneInstructions());
                 default:
-                    return new InterpreterResult(candidate.Length, new Text(candidate.Substring(1)));
+                    return new InterpreterResult(new Text(candidate.Substring(1)));
             }
         }
     }
