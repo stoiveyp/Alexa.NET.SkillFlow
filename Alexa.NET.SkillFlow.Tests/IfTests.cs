@@ -29,7 +29,7 @@ namespace Alexa.NET.SkillFlow.Tests
         [Fact]
         public void AddsCorrectly()
         {
-            var hear = new If(new True());
+            var hear = new If(new ValueWrapper(new True()));
             var instructions = new SceneInstructions();
             instructions.Add(hear);
             var result = Assert.Single(instructions.Instructions);

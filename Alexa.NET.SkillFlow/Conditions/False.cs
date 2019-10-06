@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Conditions
 {
-    public class False:Condition
+    public class False:Value
     {
     }
 }
