@@ -20,7 +20,6 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public Stack<ISkillFlowComponent> Components { get; }
 
         public int LineNumber { get; set; }
-        public int InterpretAttempts { get; set; }
 
         public bool BeginningOfLine { get; set; }
         public ISkillFlowComponent CurrentComponent => Components.Peek();

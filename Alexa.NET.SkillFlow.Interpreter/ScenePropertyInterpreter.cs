@@ -19,15 +19,15 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         }
 
-        public (int Used, ISkillFlowComponent Component) Interpret(string candidate, SkillFlowInterpretationContext context)
+        public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
             var property = candidate.Substring(1);
             switch (property)
             {
                 case "show":
-                    return (candidate.Length,new Visual());
+                    return new InterpreterResult(candidate.Length,new Visual());
                 default:
-                    return (candidate.Length, new Text(candidate.Substring(1)));
+                    return new InterpreterResult(candidate.Length, new Text(candidate.Substring(1)));
             }
         }
     }
