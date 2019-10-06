@@ -33,17 +33,34 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 switch (context.CurrentChar)
                 {
                     case '(':
-                        context.Values.Push(new OpenGroup());
+                        context.Push(new OpenGroup());
                         context.MoveNext();
                         continue;
                     case ')':
-                        context.Values.Push(new CloseGroup());
+                        context.Push(new CloseGroup());
                         context.MoveNext();
                         continue;
+                    default:
+                        if (!ProcessWord(context))
+                        {
+                            context.MoveCurrent();
+                        }
+                        continue;
                 }
-
-                break;
             }
+
+            if (context.CurrentWord.Length > 0)
+            {
+                context.Push(new LiteralValue(context.CurrentWord));
+                context.MoveCurrent();
+                context.MoveToCurrent();
+                
+            }
+        }
+
+        private static bool ProcessWord(ConditionContext context)
+        {
+            return false;
         }
     }
 }

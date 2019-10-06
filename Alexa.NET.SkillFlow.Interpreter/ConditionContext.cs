@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Text;
 using Alexa.NET.SkillFlow.Conditions;
+using Alexa.NET.SkillFlow.Interpreter.Tokens;
 
 namespace Alexa.NET.SkillFlow.Interpreter
 {
@@ -13,11 +14,17 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public int Start { get; set; }
         public int Current { get; set; }
 
+        public string CurrentWord => Remaining.ToString(Start, Current - Start);
         public char CurrentChar => Remaining[Current];
+
+        public void MoveCurrent()
+        {
+            Current++;
+        }
 
         public void MoveNext()
         {
-            Current++;
+            MoveCurrent();
             MoveToCurrent();
         }
 
@@ -44,12 +51,17 @@ namespace Alexa.NET.SkillFlow.Interpreter
             }
         }
 
-        public bool Finished => Current == Remaining.Length;
+        public bool Finished => Current >= Remaining.Length;
 
         public ConditionContext(string condition)
         {
             Remaining = new StringBuilder(condition);
             Values = new Stack<Value>();
+        }
+
+        public void Push(Value value)
+        {
+            Values.Push(value);
         }
     }
 }

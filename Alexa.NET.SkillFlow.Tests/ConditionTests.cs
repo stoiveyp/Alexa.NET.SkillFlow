@@ -10,9 +10,12 @@ namespace Alexa.NET.SkillFlow.Tests
     public class ConditionTests
     {
         [Fact]
-        public void InvalidConditionThrows()
+        public void InvalidConditionReturnsWrapper()
         {
-            Assert.Throws<InvalidConditionException>(() => ConditionParser.Parse("~"));
+            var condition = ConditionParser.Parse("~");
+            var wrapper = Assert.IsType<ValueWrapper>(condition);
+            var literal = Assert.IsType<LiteralValue>(wrapper.Value);
+            Assert.Equal("~",literal.Value);
         }
 
         [Fact]
