@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class SceneInstructions : SceneInstructionContainer,ISkillFlowComponent
+    public abstract class SceneInstructionContainer
     {
+        public abstract string Type { get; }
         public List<ISceneInstruction> Instructions { get; set; } = new List<ISceneInstruction>();
-        public override string Type => nameof(SceneInstructions);
         public void Add(ISkillFlowComponent component)
         {
             if (component is ISceneInstruction instruction)
@@ -16,7 +16,7 @@ namespace Alexa.NET.SkillFlow
             }
             else
             {
-                throw this.InvalidComponent(component);
+                throw new InvalidSkillFlowException($"Unable to add {component.Type} to {Type}");
             }
         }
     }

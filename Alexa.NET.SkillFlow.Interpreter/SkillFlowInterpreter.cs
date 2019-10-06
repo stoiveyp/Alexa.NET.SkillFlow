@@ -27,11 +27,12 @@ namespace Alexa.NET.SkillFlow
             {typeof(Scene),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new ScenePropertyInterpreter()}) },
             {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new MultiLineInterpreter()}) },
             {typeof(Visual),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new VisualPropertyInterpreter()}) },
-            {typeof(SceneInstructions),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
+            {typeof(SceneInstructionContainer),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
             {
                 new GoToInterpreter(),
-                new HearInterpreter()
-            }) },
+                new HearInterpreter(),
+                new IfInterpreter()
+            }) }
         };
 
         public Task<Story> Interpret(string input, CancellationToken token = default)
@@ -125,7 +126,19 @@ namespace Alexa.NET.SkillFlow
 
                 var used = buffer.Start;
 
-                var interpreter = Interpreters[context.CurrentComponent.GetType()].FirstOrDefault(i => i.CanInterpret(candidate, context));
+                Type currentType = context.CurrentComponent.GetType();
+                while (currentType != null && !Interpreters.ContainsKey(currentType))
+                {
+                    currentType = currentType.BaseType;
+                }
+
+                if (currentType == null)
+                {
+                    throw new InvalidSkillFlowDefinitionException(
+                        $"No children allowed on {context.CurrentComponent.Type}", context.LineNumber);
+                }
+
+                var interpreter = Interpreters[currentType].FirstOrDefault(i => i.CanInterpret(candidate, context));
 
                 if (interpreter != null)
                 {

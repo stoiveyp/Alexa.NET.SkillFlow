@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class Hear:ISceneInstruction
+    public class Hear : SceneInstructionContainer,ISceneInstruction
     {
         public Hear()
         {
@@ -22,10 +22,6 @@ namespace Alexa.NET.SkillFlow.Instructions
         }
 
         public List<string> Phrases { get; set; }
-        public string Type => nameof(Hear);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(Hear);
     }
 }

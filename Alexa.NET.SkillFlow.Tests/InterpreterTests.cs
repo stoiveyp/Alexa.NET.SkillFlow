@@ -47,7 +47,7 @@ namespace Alexa.NET.SkillFlow.Tests
         [Fact]
         public async Task AddOccursOnCorrectTab()
         {
-            var story = await new SkillFlowInterpreter().Interpret("\t@scene test");
+            var story = await new SkillFlowInterpreter().Interpret("@scene test");
             var scene = Assert.Single(story.Scenes);
             Assert.Equal("test", scene.Key);
             Assert.Equal("test", scene.Value.Name);
@@ -88,6 +88,23 @@ namespace Alexa.NET.SkillFlow.Tests
             Assert.Null(scene.Recap);
             Assert.NotNull(scene.Say);
             Assert.Equal(2,scene.Say.Content.Count);
+        }
+
+        [Fact]
+        public async Task InterpretsBaseClassCorrectly()
+        {
+            var interpreter = new SkillFlowInterpreter();
+            await interpreter.Interpret(string.Join(Environment.NewLine, "@scene test",
+                "\t*then", "\t\t-> thing"));
+        }
+
+        [Fact]
+        public async Task ThrowsWhenUnableToFindInterpreters()
+        {
+            var interpreter = new SkillFlowInterpreter();
+            interpreter.Interpreters.Remove(typeof(Story));
+            var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene test"));
+            Assert.Contains("children",exception.Message);
         }
     }
 }
