@@ -4,12 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Conditions
 {
-    public abstract class Value
+    public class False:Condition
     {
-        
-    }
-    public abstract class Condition : Value
-    {
-
     }
 }
