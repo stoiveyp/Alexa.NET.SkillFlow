@@ -19,7 +19,7 @@ namespace Alexa.NET.SkillFlow
         public SkillFlowInterpreter(SkillFlowInterpretationOptions options,
             params ISkillFlowInterpreter[] customInterpreters)
         {
-            Interpreters.AddRange(customInterpreters);
+            Interpreters[typeof(Story)].AddRange(customInterpreters);
             _options = options ?? new SkillFlowInterpretationOptions();
         }
 
@@ -28,13 +28,12 @@ namespace Alexa.NET.SkillFlow
 
         }
 
-        public List<ISkillFlowInterpreter> Interpreters = new List<ISkillFlowInterpreter>()
+        public Dictionary<Type, List<ISkillFlowInterpreter>> Interpreters = new Dictionary<Type, List<ISkillFlowInterpreter>>
         {
-            new SceneInterpreter(),
-            new ScenePropertyInterpreter(),
-            new SceneInstructionInterpreter(),
-            new MultiLineInterpreter(),
-            new VisualPropertyInterpreter(),
+            {typeof(Story),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new SceneInterpreter()}) },
+            {typeof(Scene),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new ScenePropertyInterpreter()}) },
+            {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new MultiLineInterpreter()}) },
+            {typeof(Visual),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new VisualPropertyInterpreter()}) }
         };
 
         public Task<Story> Interpret(string input, CancellationToken token = default)
@@ -131,7 +130,7 @@ namespace Alexa.NET.SkillFlow
                 var used = buffer.Start;
                 while (candidate.Any())
                 {
-                    var interpreter = Interpreters.FirstOrDefault(i => i.CanInterpret(candidate, context));
+                    var interpreter = Interpreters[context.CurrentComponent.GetType()].FirstOrDefault(i => i.CanInterpret(candidate, context));
 
                     if (interpreter != null)
                     {

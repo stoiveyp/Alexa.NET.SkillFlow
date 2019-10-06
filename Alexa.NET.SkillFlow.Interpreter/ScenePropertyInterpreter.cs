@@ -15,8 +15,6 @@ namespace Alexa.NET.SkillFlow.Interpreter
                    (TextWords.Contains(property)
                     || property == "show"
                     || property == "then");
-
-
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
