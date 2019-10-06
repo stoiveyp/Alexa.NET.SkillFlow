@@ -10,6 +10,22 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public StringBuilder Remaining { get; set; }
         public Stack<Value> Values { get; set; }
 
+        public int Start { get; set; }
+        public int Current { get; set; }
+
+        public char CurrentChar => Remaining[Current];
+
+        public void MoveNext()
+        {
+            Current++;
+            MoveToCurrent();
+        }
+
+        public void MoveToCurrent()
+        {
+            Start = Current;
+        }
+
         public Condition Condition
         {
             get
@@ -28,7 +44,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
             }
         }
 
-        public bool Finished => Remaining.Length == 0;
+        public bool Finished => Current == Remaining.Length;
 
         public ConditionContext(string condition)
         {

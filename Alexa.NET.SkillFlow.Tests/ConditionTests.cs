@@ -22,5 +22,13 @@ namespace Alexa.NET.SkillFlow.Tests
             var wrapper = Assert.IsType<ValueWrapper>(condition);
             Assert.IsType<False>(wrapper.Value);
         }
+
+        [Fact]
+        public void TokeniseGroups()
+        {
+            var context = new ConditionContext("()");
+            ConditionParser.Tokenise(context);
+            Assert.Equal(2,context.Values.Count);
+        }
     }
 }
