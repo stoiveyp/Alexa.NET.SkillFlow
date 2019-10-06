@@ -23,12 +23,14 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 return InterpreterResult.Empty;
             }
 
-            if (!_validProperties.Contains(keyvalue[0]))
+            if (!_validProperties.Contains(keyvalue[0]) || !quoters.Contains(keyvalue[1][0]) || !quoters.Contains(keyvalue[1].Last()))
             {
-                throw new InvalidSkillFlowDefinitionException($"Unable to recognise visual property {keyvalue[0]}",context.LineNumber);
+                throw new InvalidSkillFlowDefinitionException($"Unable to interpret visual property {keyvalue[0]}",context.LineNumber);
             }
 
-            return InterpreterResult.Empty;
+            var property = new VisualProperty(keyvalue[0], keyvalue[1].Substring(1, keyvalue[1].Length - 2));
+
+            return new InterpreterResult(candidate.Length,property);
         }
     }
 }
