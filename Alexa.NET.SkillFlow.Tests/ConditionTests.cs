@@ -132,5 +132,41 @@ namespace Alexa.NET.SkillFlow.Tests
             var value = Assert.Single(context.Values);
             Assert.IsType<LessThan>(value);
         }
+
+        [Fact]
+        public void GreaterThanEqualSymbol()
+        {
+            var context = new ConditionContext(">=");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<GreaterThanEqual>(value);
+        }
+
+        [Fact]
+        public void GreaterThanEqualWord()
+        {
+            var context = new ConditionContext(" is greater than or equal ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<GreaterThanEqual>(value);
+        }
+
+        [Fact]
+        public void GreaterThanSymbol()
+        {
+            var context = new ConditionContext(">");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<GreaterThan>(value);
+        }
+
+        [Fact]
+        public void GreaterThanWord()
+        {
+            var context = new ConditionContext(" is greater than ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<GreaterThan>(value);
+        }
     }
 }

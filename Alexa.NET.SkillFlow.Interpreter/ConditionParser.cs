@@ -62,6 +62,16 @@ namespace Alexa.NET.SkillFlow.Interpreter
                             context.Push(new LessThan());
                             context.MoveNext();
                             continue;
+                        case '>':
+                            if (context.Peek.HasValue && context.Peek.Value == '=')
+                            {
+                                context.Push(new GreaterThanEqual());
+                                context.MoveNext(2);
+                                continue;
+                            }
+                            context.Push(new GreaterThan());
+                            context.MoveNext();
+                            continue;
                         case '&':
                             if (context.Peek == '&')
                             {
@@ -122,6 +132,18 @@ namespace Alexa.NET.SkillFlow.Interpreter
                     else
                     {
                         context.Push(new LessThan());
+                    }
+                    return;
+                case " is greater than ":
+                    context.MoveToCurrent();
+                    if (context.PeekWord("or equal "))
+                    {
+                        context.Push(new GreaterThanEqual());
+                        context.MoveNext(9);
+                    }
+                    else
+                    {
+                        context.Push(new GreaterThan());
                     }
                     return;
             }
