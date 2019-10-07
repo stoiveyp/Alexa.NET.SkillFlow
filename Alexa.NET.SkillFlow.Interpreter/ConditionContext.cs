@@ -60,6 +60,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public bool Finished { get; set; }
     
         public char? Peek => Finished || Start >= Remaining.Length-1 ? (char?)null : Remaining[Start+1];
+        public char? PeekCurrent => Finished || Current >= Remaining.Length - 1 ? (char?) null : Remaining[Current+1];
 
         public ConditionContext(string condition)
         {

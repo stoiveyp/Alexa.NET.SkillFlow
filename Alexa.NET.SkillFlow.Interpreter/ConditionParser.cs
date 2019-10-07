@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using Alexa.NET.SkillFlow.Conditions;
 using Alexa.NET.SkillFlow.Interpreter.Tokens;
 
@@ -30,82 +31,82 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             while (!context.Finished)
             {
-                if (context.CurrentWord.Length == 0)
+                if (!context.NextChar.HasValue)
                 {
-                    switch (context.NextChar)
-                    {
-                        case '(':
-                            context.Push(new OpenGroup());
-                            context.MoveNext();
-                            continue;
-                        case ')':
-                            context.Push(new CloseGroup());
-                            context.MoveNext();
-                            continue;
-                        case '=':
-                            if (context.Peek.HasValue && context.Peek.Value == '=')
-                            {
-                                context.Push(new Equal());
-                                context.MoveNext(2);
-                                continue;
-                            }
-
-                            break;
-                        case '!':
-                            if (context.Peek.HasValue && context.Peek.Value == '=')
-                            {
-                                context.Push(new NotEqual());
-                                context.MoveNext(2);
-                                continue;
-                            }
-                            context.Push(new Not());
-                            context.MoveNext();
-                            continue;
-                        case '<':
-                            if (context.Peek.HasValue && context.Peek.Value == '=')
-                            {
-                                context.Push(new LessThanEqual());
-                                context.MoveNext(2);
-                                continue;
-                            }
-                            context.Push(new LessThan());
-                            context.MoveNext();
-                            continue;
-                        case '>':
-                            if (context.Peek.HasValue && context.Peek.Value == '=')
-                            {
-                                context.Push(new GreaterThanEqual());
-                                context.MoveNext(2);
-                                continue;
-                            }
-                            context.Push(new GreaterThan());
-                            context.MoveNext();
-                            continue;
-                        case '&':
-                            if (context.Peek == '&')
-                            {
-                                context.Push(new And());
-                                context.MoveNext(2);
-                                continue;
-                            }
-
-                            break;
-                        case '|':
-                            if (context.Peek == '|')
-                            {
-                                context.Push(new Or());
-                                context.MoveNext(2);
-                                continue;
-                            }
-
-                            break;
-                    }
-                    context.MoveCurrent();
+                    context.MoveNext();
+                    break;
                 }
-                else
+
+                switch (context.NextChar)
                 {
-                    ProcessWord(context);
-                    context.MoveCurrent();
+                    case '(':
+                        context.Push(new OpenGroup());
+                        context.MoveNext();
+                        continue;
+                    case ')':
+                        context.Push(new CloseGroup());
+                        context.MoveNext();
+                        continue;
+                    case '=':
+                        if (context.Peek.HasValue && context.Peek.Value == '=')
+                        {
+                            context.Push(new Equal());
+                            context.MoveNext(2);
+                            continue;
+                        }
+
+                        break;
+                    case '!':
+                        if (context.Peek.HasValue && context.Peek.Value == '=')
+                        {
+                            context.Push(new NotEqual());
+                            context.MoveNext(2);
+                            continue;
+                        }
+                        context.Push(new Not());
+                        context.MoveNext();
+                        continue;
+                    case '<':
+                        if (context.Peek.HasValue && context.Peek.Value == '=')
+                        {
+                            context.Push(new LessThanEqual());
+                            context.MoveNext(2);
+                            continue;
+                        }
+                        context.Push(new LessThan());
+                        context.MoveNext();
+                        continue;
+                    case '>':
+                        if (context.Peek.HasValue && context.Peek.Value == '=')
+                        {
+                            context.Push(new GreaterThanEqual());
+                            context.MoveNext(2);
+                            continue;
+                        }
+                        context.Push(new GreaterThan());
+                        context.MoveNext();
+                        continue;
+                    case '&':
+                        if (context.Peek == '&')
+                        {
+                            context.Push(new And());
+                            context.MoveNext(2);
+                            continue;
+                        }
+
+                        break;
+                    case '|':
+                        if (context.Peek == '|')
+                        {
+                            context.Push(new Or());
+                            context.MoveNext(2);
+                            continue;
+                        }
+
+                        break;
+                    default:
+                        ProcessWord(context);
+                        break;
                 }
             }
 
@@ -117,21 +118,28 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         private static void ProcessWord(ConditionContext context)
         {
+            while (context.NextChar == ' ')
+            {
+                context.MoveNext();
+            }
+
+            MoveToBreaker(context);
+
             switch (context.CurrentWord)
             {
-                case " or ":
+                case "or":
                     context.Push(new Or());
                     context.MoveToCurrent();
                     return;
-                case " and ":
+                case "and":
                     context.Push(new And());
                     context.MoveToCurrent();
                     return;
-                case " is ":
+                case "is":
                     context.MoveToCurrent();
-                    if (context.PeekWord("less than "))
+                    if (context.PeekWord(" less than "))
                     {
-                        context.MoveNext(10);
+                        context.MoveNext(11);
                         if (context.PeekWord("or equal "))
                         {
                             context.MoveNext(9);
@@ -141,10 +149,12 @@ namespace Alexa.NET.SkillFlow.Interpreter
                         {
                             context.Push(new LessThan());
                         }
+
+                        return;
                     }
-                    else if (context.PeekWord("greater than "))
+                    else if (context.PeekWord(" greater than "))
                     {
-                        context.MoveNext(13);
+                        context.MoveNext(14);
                         if (context.PeekWord("or equal "))
                         {
                             context.MoveNext(9);
@@ -155,9 +165,9 @@ namespace Alexa.NET.SkillFlow.Interpreter
                             context.Push(new GreaterThan());
                         }
                     }
-                    else if (context.PeekWord("not "))
+                    else if (context.PeekWord(" not "))
                     {
-                        context.MoveNext(4);
+                        context.MoveNext(5);
                         context.Push(new NotEqual());
                     }
                     else
@@ -165,7 +175,24 @@ namespace Alexa.NET.SkillFlow.Interpreter
                         context.Push(new Equal());
                     }
                     return;
+                default:
+                    if (context.CurrentWord.Trim().Length > 0)
+                    {
+                        context.Push(new LiteralValue(context.CurrentWord.Trim()));
+                        context.MoveToCurrent();
+                    }
+                    break;
             }
+        }
+
+        static readonly char?[] breakers = { '(', ')', ' ', '<', '>', '=', '!', '|', '&' };
+        private static void MoveToBreaker(ConditionContext context)
+        {
+            while (context.PeekCurrent.HasValue && !breakers.Contains(context.PeekCurrent))
+            {
+                context.MoveCurrent();
+            }
+            context.MoveCurrent();
         }
     }
 }
