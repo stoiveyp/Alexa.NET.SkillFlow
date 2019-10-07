@@ -15,20 +15,17 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public int Start { get; set; }
         public int Current { get; set; }
 
-        public string CurrentWord => Start == Remaining.Length ? string.Empty : Remaining.ToString(Start, Current - Start);
-        public char CurrentChar => Remaining[Current];
+        public string CurrentWord => Remaining.ToString(Start, Current - Start);
+        public char? NextChar => Start >= Remaining.Length ? (char?)null : Remaining[Start];
 
         public void MoveCurrent(int number = 1)
         {
-            if (Current + number >= Remaining.Length)
+            if (Current >= Remaining.Length)
             {
                 Finished = true;
-                Current = Remaining.Length - 1;
+                return;
             }
-            else
-            {
-                Current += number;
-            }
+            Current += number;
         }
 
         public void MoveNext(int number = 1)
@@ -60,9 +57,9 @@ namespace Alexa.NET.SkillFlow.Interpreter
             }
         }
 
-        public bool Finished { get; private set; }
+        public bool Finished { get; set; }
     
-        public char? Peek => Finished? (char?)null : Remaining[Current + 1];
+        public char? Peek => Finished || Start >= Remaining.Length-1 ? (char?)null : Remaining[Start+1];
 
         public ConditionContext(string condition)
         {

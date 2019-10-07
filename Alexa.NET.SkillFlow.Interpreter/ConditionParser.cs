@@ -32,7 +32,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
             {
                 if (context.CurrentWord.Length == 0)
                 {
-                    switch (context.CurrentChar)
+                    switch (context.NextChar)
                     {
                         case '(':
                             context.Push(new OpenGroup());
