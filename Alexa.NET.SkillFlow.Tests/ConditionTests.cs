@@ -80,6 +80,24 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
+        public void EqualSymbol()
+        {
+            var context = new ConditionContext("==");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<Equal>(value);
+        }
+
+        [Fact]
+        public void EqualWord()
+        {
+            var context = new ConditionContext(" is ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<Equal>(value);
+        }
+
+        [Fact]
         public void NotEqualSymbol()
         {
             var context = new ConditionContext("!=");

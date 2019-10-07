@@ -42,6 +42,15 @@ namespace Alexa.NET.SkillFlow.Interpreter
                             context.Push(new CloseGroup());
                             context.MoveNext();
                             continue;
+                        case '=':
+                            if (context.Peek.HasValue && context.Peek.Value == '=')
+                            {
+                                context.Push(new Equal());
+                                context.MoveNext(2);
+                                continue;
+                            }
+
+                            break;
                         case '!':
                             if (context.Peek.HasValue && context.Peek.Value == '=')
                             {
@@ -118,32 +127,42 @@ namespace Alexa.NET.SkillFlow.Interpreter
                     context.Push(new And());
                     context.MoveToCurrent();
                     return;
-                case " is not ":
-                    context.Push(new NotEqual());
+                case " is ":
                     context.MoveToCurrent();
-                    return;
-                case " is less than ":
-                    context.MoveToCurrent();
-                    if (context.PeekWord("or equal "))
+                    if (context.PeekWord("less than "))
                     {
-                        context.Push(new LessThanEqual());
-                        context.MoveNext(9);
+                        context.MoveNext(10);
+                        if (context.PeekWord("or equal "))
+                        {
+                            context.MoveNext(9);
+                            context.Push(new LessThanEqual());
+                        }
+                        else
+                        {
+                            context.Push(new LessThan());
+                        }
+                    }
+                    else if (context.PeekWord("greater than "))
+                    {
+                        context.MoveNext(13);
+                        if (context.PeekWord("or equal "))
+                        {
+                            context.MoveNext(9);
+                            context.Push(new GreaterThanEqual());
+                        }
+                        else
+                        {
+                            context.Push(new GreaterThan());
+                        }
+                    }
+                    else if (context.PeekWord("not "))
+                    {
+                        context.MoveNext(4);
+                        context.Push(new NotEqual());
                     }
                     else
                     {
-                        context.Push(new LessThan());
-                    }
-                    return;
-                case " is greater than ":
-                    context.MoveToCurrent();
-                    if (context.PeekWord("or equal "))
-                    {
-                        context.Push(new GreaterThanEqual());
-                        context.MoveNext(9);
-                    }
-                    else
-                    {
-                        context.Push(new GreaterThan());
+                        context.Push(new Equal());
                     }
                     return;
             }
