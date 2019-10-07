@@ -30,37 +30,62 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             while (!context.Finished)
             {
-                switch (context.CurrentChar)
+                if (context.CurrentWord.Length == 0)
                 {
-                    case '(':
-                        context.Push(new OpenGroup());
-                        context.MoveNext();
-                        continue;
-                    case ')':
-                        context.Push(new CloseGroup());
-                        context.MoveNext();
-                        continue;
-                    default:
-                        if (!ProcessWord(context))
-                        {
-                            context.MoveCurrent();
-                        }
-                        continue;
+                    switch (context.CurrentChar)
+                    {
+                        case '(':
+                            context.Push(new OpenGroup());
+                            context.MoveNext();
+                            continue;
+                        case ')':
+                            context.Push(new CloseGroup());
+                            context.MoveNext();
+                            continue;
+                        case '!':
+                            if (context.Peek.HasValue && context.Peek.Value == '=')
+                            {
+                                context.Push(new NotEqual());
+                                context.MoveNext(2);
+                                continue;
+                            }
+                            context.Push(new Not());
+                            context.MoveNext();
+                            continue;
+                        case '|':
+                            if (context.Peek == '|')
+                            {
+                                context.Push(new Or());
+                                context.MoveNext(2);
+                                continue;
+                            }
+
+                            break;
+                    }
+                    context.MoveCurrent();
+                }
+                else
+                {
+                    ProcessWord(context);
+                    context.MoveCurrent();
                 }
             }
 
             if (context.CurrentWord.Length > 0)
             {
                 context.Push(new LiteralValue(context.CurrentWord));
-                context.MoveCurrent();
-                context.MoveToCurrent();
-                
             }
         }
 
-        private static bool ProcessWord(ConditionContext context)
+        private static void ProcessWord(ConditionContext context)
         {
-            return false;
+            switch (context.CurrentWord)
+            {
+                case " or ":
+                    context.Push(new Or());
+                    context.MoveToCurrent();
+                    return;
+            }
         }
     }
 }

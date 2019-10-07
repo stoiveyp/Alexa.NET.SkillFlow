@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Alexa.NET.SkillFlow.Conditions;
 using Alexa.NET.SkillFlow.Interpreter;
@@ -27,11 +28,46 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public void TokeniseGroups()
+        public void Groups()
         {
             var context = new ConditionContext("()");
             ConditionParser.Tokenise(context);
             Assert.Equal(2,context.Values.Count);
+        }
+
+        [Fact]
+        public void NotWord()
+        {
+            var context = new ConditionContext("!");
+            ConditionParser.Tokenise(context);
+            Assert.IsType<Not>(context.Values.First());
+        }
+
+        [Fact]
+        public void OrWord()
+        {
+            var context = new ConditionContext(" or ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<Or>(value);
+        }
+
+        [Fact]
+        public void OrSymbol()
+        {
+            var context = new ConditionContext("||");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<Or>(value);
+        }
+
+        [Fact]
+        public void NotEqualWord()
+        {
+            var context = new ConditionContext("!=");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<NotEqual>(value);
         }
     }
 }

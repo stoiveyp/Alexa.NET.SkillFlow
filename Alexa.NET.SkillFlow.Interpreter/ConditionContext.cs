@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Alexa.NET.SkillFlow.Conditions;
@@ -14,17 +15,25 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public int Start { get; set; }
         public int Current { get; set; }
 
-        public string CurrentWord => Remaining.ToString(Start, Current - Start);
+        public string CurrentWord => Start == Remaining.Length ? string.Empty : Remaining.ToString(Start, Current - Start);
         public char CurrentChar => Remaining[Current];
 
-        public void MoveCurrent()
+        public void MoveCurrent(int number = 1)
         {
-            Current++;
+            if (Current + number >= Remaining.Length)
+            {
+                Finished = true;
+                Current = Remaining.Length - 1;
+            }
+            else
+            {
+                Current += number;
+            }
         }
 
-        public void MoveNext()
+        public void MoveNext(int number = 1)
         {
-            MoveCurrent();
+            MoveCurrent(number);
             MoveToCurrent();
         }
 
@@ -51,7 +60,9 @@ namespace Alexa.NET.SkillFlow.Interpreter
             }
         }
 
-        public bool Finished => Current >= Remaining.Length;
+        public bool Finished { get; private set; }
+    
+        public char? Peek => Finished? (char?)null : Remaining[Current + 1];
 
         public ConditionContext(string condition)
         {
