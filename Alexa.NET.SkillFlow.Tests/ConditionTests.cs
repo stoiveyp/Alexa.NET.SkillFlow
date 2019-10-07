@@ -62,12 +62,75 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public void NotEqualWord()
+        public void AndSymbol()
+        {
+            var context = new ConditionContext("&&");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<And>(value);
+        }
+
+        [Fact]
+        public void AndWord()
+        {
+            var context = new ConditionContext(" and ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<And>(value);
+        }
+
+        [Fact]
+        public void NotEqualSymbol()
         {
             var context = new ConditionContext("!=");
             ConditionParser.Tokenise(context);
             var value = Assert.Single(context.Values);
             Assert.IsType<NotEqual>(value);
+        }
+
+        [Fact]
+        public void NotEqualWord()
+        {
+            var context = new ConditionContext(" is not ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<NotEqual>(value);
+        }
+
+        [Fact]
+        public void LessThanEqualSymbol()
+        {
+            var context = new ConditionContext("<=");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<LessThanEqual>(value);
+        }
+
+        [Fact]
+        public void LessThanEqualWord()
+        {
+            var context = new ConditionContext(" is less than or equal ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<LessThanEqual>(value);
+        }
+
+        [Fact]
+        public void LessThanSymbol()
+        {
+            var context = new ConditionContext("<");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<LessThan>(value);
+        }
+
+        [Fact]
+        public void LessThanWord()
+        {
+            var context = new ConditionContext(" is less than ");
+            ConditionParser.Tokenise(context);
+            var value = Assert.Single(context.Values);
+            Assert.IsType<LessThan>(value);
         }
     }
 }

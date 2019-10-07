@@ -71,5 +71,10 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             Values.Push(value);
         }
+
+        public bool PeekWord(string word)
+        {
+            return Start + word.Length <= Remaining.Length && Remaining.ToString(Start, word.Length) == word;
+        }
     }
 }

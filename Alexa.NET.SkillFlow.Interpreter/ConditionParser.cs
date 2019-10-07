@@ -52,6 +52,25 @@ namespace Alexa.NET.SkillFlow.Interpreter
                             context.Push(new Not());
                             context.MoveNext();
                             continue;
+                        case '<':
+                            if (context.Peek.HasValue && context.Peek.Value == '=')
+                            {
+                                context.Push(new LessThanEqual());
+                                context.MoveNext(2);
+                                continue;
+                            }
+                            context.Push(new LessThan());
+                            context.MoveNext();
+                            continue;
+                        case '&':
+                            if (context.Peek == '&')
+                            {
+                                context.Push(new And());
+                                context.MoveNext(2);
+                                continue;
+                            }
+
+                            break;
                         case '|':
                             if (context.Peek == '|')
                             {
@@ -84,6 +103,26 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 case " or ":
                     context.Push(new Or());
                     context.MoveToCurrent();
+                    return;
+                case " and ":
+                    context.Push(new And());
+                    context.MoveToCurrent();
+                    return;
+                case " is not ":
+                    context.Push(new NotEqual());
+                    context.MoveToCurrent();
+                    return;
+                case " is less than ":
+                    context.MoveToCurrent();
+                    if (context.PeekWord("or equal "))
+                    {
+                        context.Push(new LessThanEqual());
+                        context.MoveNext(9);
+                    }
+                    else
+                    {
+                        context.Push(new LessThan());
+                    }
                     return;
             }
         }
