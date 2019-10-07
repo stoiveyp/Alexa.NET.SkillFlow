@@ -10,7 +10,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
     public class ConditionContext
     {
         public StringBuilder Remaining { get; set; }
-        public Stack<Value> Values { get; set; }
+        public List<Value> Values { get; set; }
 
         public int Start { get; set; }
         public int Current { get; set; }
@@ -65,12 +65,12 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public ConditionContext(string condition)
         {
             Remaining = new StringBuilder(condition);
-            Values = new Stack<Value>();
+            Values = new List<Value>();
         }
 
         public void Push(Value value)
         {
-            Values.Push(value);
+            Values.Add(value);
         }
 
         public bool PeekWord(string word)

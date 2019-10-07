@@ -31,6 +31,11 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             while (!context.Finished)
             {
+                while (context.NextChar.HasValue && context.NextChar == ' ')
+                {
+                    context.MoveNext();
+                }
+
                 if (!context.NextChar.HasValue)
                 {
                     context.MoveNext();
@@ -118,11 +123,6 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         private static void ProcessWord(ConditionContext context)
         {
-            while (context.NextChar == ' ')
-            {
-                context.MoveNext();
-            }
-
             MoveToBreaker(context);
 
             switch (context.CurrentWord)
