@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using Alexa.NET.SkillFlow.Conditions;
 using Alexa.NET.SkillFlow.Interpreter;
 using Xunit;
 
 namespace Alexa.NET.SkillFlow.Tests
 {
-    public class ConditionTests
+    public class TokenTests
     {
         [Fact]
         public void InvalidConditionReturnsWrapper()

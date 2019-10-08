@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Alexa.NET.SkillFlow.Conditions;
-using Alexa.NET.SkillFlow.Interpreter.Tokens;
 
 namespace Alexa.NET.SkillFlow.Interpreter
 {
     public class ConditionContext
     {
         public StringBuilder Remaining { get; set; }
-        public List<Value> Values { get; set; }
+        public Stack<Value> Values { get; set; }
 
         public int Start { get; set; }
         public int Current { get; set; }
@@ -65,12 +63,12 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public ConditionContext(string condition)
         {
             Remaining = new StringBuilder(condition);
-            Values = new List<Value>();
+            Values = new Stack<Value>();
         }
 
         public void Push(Value value)
         {
-            Values.Add(value);
+            Values.Push(value);
         }
 
         public bool PeekWord(string word)

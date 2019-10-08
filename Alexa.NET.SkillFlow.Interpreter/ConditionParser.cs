@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using Alexa.NET.SkillFlow.Conditions;
 using Alexa.NET.SkillFlow.Interpreter.Tokens;
 
@@ -24,7 +28,84 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 throw new InvalidConditionException(condition);
             }
 
-            return context.Condition;
+            return Stack(context.Values, condition);
+        }
+
+        public static readonly Type[] StackPrecedence =
+        {
+            typeof(LiteralValue),
+            typeof(Equal),
+            typeof(OpenGroup),
+            typeof(CloseGroup)
+        };
+
+        private static bool HigherPrecedence(Value candidate, Value current)
+        {
+            return Array.IndexOf(StackPrecedence, candidate.GetType()) >
+                   (current == null
+                       ? -1
+                       : Array.IndexOf(StackPrecedence, current.GetType()));
+        }
+
+        private static Value SafePeek(Stack<Value> stack)
+        {
+            return (stack.Any() ? stack.Peek() : null);
+        }
+
+        public static Condition Stack(Stack<Value> stack, string condition)
+        {
+            if (stack.Count < 2)
+            {
+                return MakeCondition(stack, condition);
+            }
+
+            var arrange = new Stack<Value>();
+
+            while (SafePeek(stack) != null)
+            {
+                var token = stack.Pop();
+                if (HigherPrecedence(token, SafePeek(arrange)))
+                {
+                    arrange.Push(token);
+                }
+                else
+                {
+                    var subStack = new Stack<Value>(new[] { token });
+                    while (!HigherPrecedence(SafePeek(arrange), token))
+                    {
+                        subStack.Push(arrange.Pop());
+                    }
+
+                    var side = Stack(subStack, condition);
+                    var current = arrange.Pop();
+                    if (current is BinaryCondition binary)
+                    {
+                        binary.Left = side;
+                        binary.Right = Stack(arrange, condition);
+                        return binary;
+                    }
+
+                    return side;
+                }
+            }
+
+            if (arrange.Count > 1)
+            {
+                throw new InvalidConditionException(condition);
+            }
+
+            return MakeCondition(arrange, condition);
+        }
+
+        private static Condition MakeCondition(Stack<Value> stack, string originalCondition)
+        {
+            if (stack.Count > 1 || stack.First() == null)
+            {
+                throw new InvalidConditionException(originalCondition);
+            }
+
+            var final = stack.Pop();
+            return final is Condition finalCondition ? finalCondition : new ValueWrapper(final);
         }
 
         public static void Tokenise(ConditionContext context)
