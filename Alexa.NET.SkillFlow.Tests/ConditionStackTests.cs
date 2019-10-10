@@ -21,13 +21,20 @@ namespace Alexa.NET.SkillFlow.Tests
             var result = ConditionParser.Parse("3 == 5");
             var equal = Assert.IsType<Equal>(result);
 
-            var leftWrap = Assert.IsType<ValueWrapper>(equal.Left);
-            var leftLiteral = Assert.IsType<LiteralValue>(leftWrap.Value);
-            Assert.Equal("3",leftLiteral.Value);
+            var left = Assert.IsType<LiteralValue>(equal.Left);
+            Assert.Equal("3",left.Value);
 
-            var rightWrap = Assert.IsType<ValueWrapper>(equal.Right);
-            var rightLiteral = Assert.IsType<LiteralValue>(rightWrap.Value);
-            Assert.Equal("5", rightLiteral.Value);
+            var right = Assert.IsType<LiteralValue>(equal.Right);
+            Assert.Equal("5", right.Value);
+        }
+
+        [Fact]
+        public void GroupWithAdd()
+        {
+            var result = ConditionParser.Parse("(false == test) == (5 > 3)");
+            var equal = Assert.IsType<Equal>(result);
+            Assert.IsType<Equal>(equal.Left);
+            Assert.IsType<GreaterThan>(equal.Right);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -33,18 +34,23 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         public static readonly Type[] StackPrecedence =
         {
-            typeof(LiteralValue),
+            typeof(GreaterThan),
+            typeof(GreaterThanEqual),
+            typeof(LessThan),
+            typeof(LessThanEqual),
+            typeof(Not),
             typeof(Equal),
+            typeof(And),
+            typeof(Or),
             typeof(OpenGroup),
             typeof(CloseGroup)
         };
 
-        private static bool HigherPrecedence(Value candidate, Value current)
+        private static int Precedence(Value candidate)
         {
-            return Array.IndexOf(StackPrecedence, candidate.GetType()) >
-                   (current == null
+            return candidate == null
                        ? -1
-                       : Array.IndexOf(StackPrecedence, current.GetType()));
+                       : Array.IndexOf(StackPrecedence, candidate.GetType());
         }
 
         private static Value SafePeek(Stack<Value> stack)
@@ -56,55 +62,75 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             if (stack.Count < 2)
             {
-                return MakeCondition(stack, condition);
+                return MakeCondition(stack.First(), condition);
             }
 
-            var arrange = new Stack<Value>();
+            var priorityTokens = new Stack<Value>();
+            var ops = new Stack<Value>();
 
             while (SafePeek(stack) != null)
             {
                 var token = stack.Pop();
-                if (HigherPrecedence(token, SafePeek(arrange)))
+                if (token is CloseGroup)
                 {
-                    arrange.Push(token);
+                    token = Stack(stack, condition);
+                }
+
+                if (token is OpenGroup)
+                {
+                    while (ops.Any())
+                    {
+                        priorityTokens.Push(ops.Pop());
+                    }
+                    return MakeCondition(HandleToken(priorityTokens.Pop(), priorityTokens), condition);
+                }
+
+                if (Precedence(token) <= Precedence(SafePeek(priorityTokens)))
+                {
+                    priorityTokens.Push(token);
+                }
+                else if (ops.Any() && Precedence(token) > Precedence(ops.Peek()))
+                {
+                    var currentOp = ops.Pop();
+                    priorityTokens.Push(HandleToken(currentOp, priorityTokens));
+                    ops.Push(token);
                 }
                 else
                 {
-                    var subStack = new Stack<Value>(new[] { token });
-                    while (!HigherPrecedence(SafePeek(arrange), token))
-                    {
-                        subStack.Push(arrange.Pop());
-                    }
-
-                    var side = Stack(subStack, condition);
-                    var current = arrange.Pop();
-                    if (current is BinaryCondition binary)
-                    {
-                        binary.Left = side;
-                        binary.Right = Stack(arrange, condition);
-                        return binary;
-                    }
-
-                    return side;
+                    ops.Push(token);
                 }
             }
 
-            if (arrange.Count > 1)
+            while (ops.Any())
             {
-                throw new InvalidConditionException(condition);
+                priorityTokens.Push(ops.Pop());
             }
 
-            return MakeCondition(arrange, condition);
+            return MakeCondition(HandleToken(priorityTokens.Pop(),priorityTokens), condition);
         }
 
-        private static Condition MakeCondition(Stack<Value> stack, string originalCondition)
+        private static Value HandleToken(Value op, Stack<Value> stack)
         {
-            if (stack.Count > 1 || stack.First() == null)
+            if (stack.Any() && op is BinaryCondition binary)
             {
-                throw new InvalidConditionException(originalCondition);
+                if (binary.Left == null)
+                {
+                    binary.Left = HandleToken(stack.Pop(), stack);
+                }
+
+                if (binary.Right == null)
+                {
+                    binary.Right = HandleToken(stack.Pop(), stack);
+                }
+
+                return binary;
             }
 
-            var final = stack.Pop();
+            return op;
+        }
+
+        private static Condition MakeCondition(Value final, string originalCondition)
+        {
             return final is Condition finalCondition ? finalCondition : new ValueWrapper(final);
         }
 
