@@ -4,10 +4,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.IO.Pipelines;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Xml;
 using Alexa.NET.SkillFlow.Interpreter;
 
 namespace Alexa.NET.SkillFlow
@@ -31,7 +29,8 @@ namespace Alexa.NET.SkillFlow
             {
                 new GoToInterpreter(),
                 new HearInterpreter(),
-                new IfInterpreter()
+                new IfInterpreter(),
+                new SetInterpreter() 
             }) }
         };
 
