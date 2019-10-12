@@ -31,7 +31,8 @@ namespace Alexa.NET.SkillFlow
                 new HearInterpreter(),
                 new IfInterpreter(),
                 new SetInterpreter(),
-                new IncrementInterpreter()
+                new IncrementInterpreter(),
+                new FlagInterpreter()
             }) }
         };
 
