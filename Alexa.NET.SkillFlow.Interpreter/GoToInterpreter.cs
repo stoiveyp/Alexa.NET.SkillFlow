@@ -9,11 +9,15 @@ namespace Alexa.NET.SkillFlow.Interpreter
     {
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return context.CurrentComponent is SceneInstructions && candidate.StartsWith("->");
+            return context.CurrentComponent is SceneInstructions && (candidate == "<->" || candidate.StartsWith("->"));
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
+            if (candidate == "<->")
+            {
+                return new InterpreterResult(new GoToAndReturn());
+            }
             var sceneName = candidate.Substring(2).Trim();
             return new InterpreterResult(new GoTo(sceneName));
         }

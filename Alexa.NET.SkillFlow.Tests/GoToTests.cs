@@ -19,6 +19,15 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
+        public void CorrectlyIdentifiesReturn()
+        {
+            var interpreter = new GoToInterpreter();
+            var context = new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions());
+            context.Components.Push(new SceneInstructions());
+            Assert.True(interpreter.CanInterpret("<->", context));
+        }
+
+        [Fact]
         public void CorrectlyIdentifiesFalseText()
         {
             var interpreter = new GoToInterpreter();
@@ -36,6 +45,15 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
+        public void CreatesAndReturnComponentCorrectly()
+        {
+            var interpreter = new GoToInterpreter();
+            var result = interpreter.Interpret("<->",
+                new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
+            Assert.IsType<GoToAndReturn>(result.Component);
+        }
+
+        [Fact]
         public void AddsCorrectly()
         {
             var instruction = new GoTo("test");
@@ -43,6 +61,16 @@ namespace Alexa.NET.SkillFlow.Tests
             instructions.Add(instruction);
             var result = Assert.Single(instructions.Instructions);
             Assert.Equal(instruction,result);
+        }
+
+        [Fact]
+        public void AddsAndReturnCorrectly()
+        {
+            var instruction = new GoToAndReturn();
+            var instructions = new SceneInstructions();
+            instructions.Add(instruction);
+            var result = Assert.Single(instructions.Instructions);
+            Assert.Equal(instruction, result);
         }
     }
 }
