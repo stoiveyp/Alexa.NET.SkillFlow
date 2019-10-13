@@ -6,6 +6,7 @@ namespace Alexa.NET.SkillFlow
 {
     public abstract class SceneInstructionContainer:SceneInstruction
     {
+        public virtual bool Group => false;
         public List<SceneInstruction> Instructions { get; set; } = new List<SceneInstruction>();
 
         public override void Add(SkillFlowComponent component)
