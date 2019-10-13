@@ -112,7 +112,8 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task ThrowOnBadGroupEndIndent()
         {
             var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
-            await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
+            var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
+            Assert.StartsWith("Unclosed group", exception.Message);
         }
 
         [Fact]
