@@ -126,6 +126,10 @@ namespace Alexa.NET.SkillFlow
 
                         while (currentLevel < context.Components.Count)
                         {
+                            if (context.CurrentComponent is SceneInstructionContainer container && container.Group)
+                            {
+                                throw new InvalidSkillFlowDefinitionException("Unclosed group or group closure isn't indented correctly'", context.LineNumber);
+                            }
                             context.Components.Pop();
                         }
 
