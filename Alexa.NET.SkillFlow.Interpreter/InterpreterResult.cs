@@ -14,5 +14,10 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public SkillFlowComponent Component { get; set; }
 
         public static InterpreterResult Empty => new InterpreterResult(null);
+
+        public static bool IsEmpty(InterpreterResult result)
+        {
+            return result.Component == null;
+        }
     }
 }

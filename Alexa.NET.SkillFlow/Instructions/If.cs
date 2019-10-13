@@ -13,6 +13,8 @@ namespace Alexa.NET.SkillFlow.Instructions
         {
             Condition = condition;
         }
+
+        public override bool Group => true;
         public override string Type => nameof(If);
 
         public Condition Condition { get; set; }

@@ -106,5 +106,12 @@ namespace Alexa.NET.SkillFlow.Tests
             var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene test"));
             Assert.Contains("children",exception.Message);
         }
+
+        [Fact]
+        public async Task ThrowOnBadGroupEndIndent()
+        {
+            var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
+            await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
+        }
     }
 }

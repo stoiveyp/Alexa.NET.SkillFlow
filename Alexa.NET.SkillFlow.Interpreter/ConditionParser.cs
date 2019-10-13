@@ -62,7 +62,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
         {
             if (stack.Count < 2)
             {
-                return MakeCondition(stack.First(), condition);
+                return MakeCondition(stack.First());
             }
 
             var priorityTokens = new Stack<Value>();
@@ -82,7 +82,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
                     {
                         priorityTokens.Push(ops.Pop());
                     }
-                    return MakeCondition(HandleToken(priorityTokens.Pop(), priorityTokens), condition);
+                    return MakeCondition(HandleToken(priorityTokens.Pop(), priorityTokens));
                 }
 
                 if (Precedence(token) <= Precedence(SafePeek(priorityTokens)))
@@ -106,7 +106,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 priorityTokens.Push(ops.Pop());
             }
 
-            return MakeCondition(HandleToken(priorityTokens.Pop(),priorityTokens), condition);
+            return MakeCondition(HandleToken(priorityTokens.Pop(),priorityTokens));
         }
 
         private static Value HandleToken(Value op, Stack<Value> stack)
@@ -125,11 +125,15 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
                 return binary;
             }
+            else if (stack.Any() && op is UnaryCondition unary)
+            {
+                unary.Condition = HandleToken(stack.Pop(), stack);
+            }
 
             return op;
         }
 
-        private static Condition MakeCondition(Value final, string originalCondition)
+        private static Condition MakeCondition(Value final)
         {
             return final is Condition finalCondition ? finalCondition : new ValueWrapper(final);
         }

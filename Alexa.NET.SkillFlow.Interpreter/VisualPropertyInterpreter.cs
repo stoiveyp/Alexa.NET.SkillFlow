@@ -20,7 +20,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
             if (keyvalue.Length < 2)
             {
-                return InterpreterResult.Empty;
+                throw new InvalidSkillFlowDefinitionException($"Unable to interpret visual property {candidate}", context.LineNumber);
             }
 
             if (!_validProperties.Contains(keyvalue[0]) || !quoters.Contains(keyvalue[1][0]) || !quoters.Contains(keyvalue[1].Last()))
