@@ -14,37 +14,33 @@ namespace Alexa.NET.SkillFlow.Tests
         public void IdentifiesAtSymbolAsCandidate()
         {
             var interpreter = new SceneInterpreter();
-            Assert.True(interpreter.CanInterpret("@scene", DefaultContext));
+            Assert.True(interpreter.CanInterpret("@test", DefaultContext));
         }
 
         [Fact]
         public void FailsToIdentifyCandidate()
         {
             var interpreter = new SceneInterpreter();
-            Assert.False(interpreter.CanInterpret("*scene", DefaultContext));
+            Assert.False(interpreter.CanInterpret("*test", DefaultContext));
         }
 
         [Fact]
         public void ThrowsOnNoName()
         {
             var interpreter = new SceneInterpreter();
-            Assert.Throws<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene", DefaultContext));
+            Assert.False(interpreter.CanInterpret("@&&", DefaultContext));
         }
 
         [Fact]
         public void ThrowsOnInvalidName()
         {
             var interpreter = new SceneInterpreter();
-            Assert.Throws<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene &&", DefaultContext));
+            Assert.False(interpreter.CanInterpret("@&&", DefaultContext));
         }
 
         [Theory]
-        [InlineData("@scene test", "test")]
-        [InlineData("@start", "start")]
-        [InlineData("@resume", "resume")]
-        [InlineData("@pause", "pause")]
-        [InlineData("@global prepend", "global prepend")]
-        [InlineData("@global append", "global append")]
+        [InlineData("@test", "test")]
+        [InlineData("@walk to the north", "walk to the north")]
         public async Task GeneratesScene(string text, string name)
         {
             var interpreter = new SkillFlowInterpreter();

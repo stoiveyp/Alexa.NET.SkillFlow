@@ -38,7 +38,7 @@ namespace Alexa.NET.SkillFlow.Tests
         [Fact]
         public async Task HandlesNewLine()
         {
-            var story = await new SkillFlowInterpreter().Interpret("@scene test" + Environment.NewLine);
+            var story = await new SkillFlowInterpreter().Interpret("@test" + Environment.NewLine);
             var scene = Assert.Single(story.Scenes);
             Assert.Equal("test", scene.Key);
             Assert.Equal("test", scene.Value.Name);
@@ -47,7 +47,7 @@ namespace Alexa.NET.SkillFlow.Tests
         [Fact]
         public async Task AddOccursOnCorrectTab()
         {
-            var story = await new SkillFlowInterpreter().Interpret("@scene test");
+            var story = await new SkillFlowInterpreter().Interpret("@test");
             var scene = Assert.Single(story.Scenes);
             Assert.Equal("test", scene.Key);
             Assert.Equal("test", scene.Value.Name);

@@ -7,24 +7,13 @@ namespace Alexa.NET.SkillFlow.Interpreter
     {
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return candidate.StartsWith("@scene");
+            return candidate.Length > 3 && candidate[0] == '@' &&
+                   candidate.Skip(1).All(c => char.IsLetterOrDigit(c) || c == ' ');
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            if (candidate.Length <= 7)
-            {
-                throw new InvalidSkillFlowDefinitionException($"No scene name", context.LineNumber);
-            }
-
-            var sceneName = candidate.Substring(7);
-
-            if (!sceneName.All(c => char.IsLetterOrDigit(c) || c == ' '))
-            {
-                throw new InvalidSkillFlowDefinitionException($"Invalid scene name '{sceneName}'", context.LineNumber);
-            }
-
-            return new InterpreterResult(new Scene(sceneName));
+            return new InterpreterResult(new Scene(candidate.Substring(1)));
         }
     }
 }
