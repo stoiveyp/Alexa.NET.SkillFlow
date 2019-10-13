@@ -6,12 +6,12 @@ namespace Alexa.NET.SkillFlow.Interpreter
 {
     public struct InterpreterResult
     {
-        public InterpreterResult(ISkillFlowComponent component)
+        public InterpreterResult(SkillFlowComponent component)
         {
             Component = component;
         }
 
-        public ISkillFlowComponent Component { get; set; }
+        public SkillFlowComponent Component { get; set; }
 
         public static InterpreterResult Empty => new InterpreterResult(null);
     }

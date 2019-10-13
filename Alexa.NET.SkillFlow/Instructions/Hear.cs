@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class Hear : SceneInstructionContainer,ISceneInstruction
+    public class Hear : SceneInstructionContainer
     {
         public Hear()
         {

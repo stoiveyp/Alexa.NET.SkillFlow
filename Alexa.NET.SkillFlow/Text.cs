@@ -4,19 +4,19 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Text:ISkillFlowComponent
+    public class Text:SkillFlowComponent
     {
         public Text(string type)
         {
             TextType = type;
         }
 
-        public string Type => nameof(Text);
+        public override string Type => nameof(Text);
 
         public string TextType { get; }
 
         public List<string> Content { get; set; } = new List<string>();
-        public void Add(ISkillFlowComponent component)
+        public override void Add(SkillFlowComponent component)
         {
             if (component is Variation _)
             {

@@ -8,7 +8,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public SkillFlowInterpretationContext(SkillFlowInterpretationOptions options)
         {
             Options = options;
-            Components = new Stack<ISkillFlowComponent>();
+            Components = new Stack<SkillFlowComponent>();
             Story = new Story();
             Components.Push(Story);
         }
@@ -16,10 +16,10 @@ namespace Alexa.NET.SkillFlow.Interpreter
         public Story Story { get; }
 
         public SkillFlowInterpretationOptions Options { get; }
-        public Stack<ISkillFlowComponent> Components { get; }
+        public Stack<SkillFlowComponent> Components { get; }
 
         public int LineNumber { get; set; }
 
-        public ISkillFlowComponent CurrentComponent => Components.Peek();
+        public SkillFlowComponent CurrentComponent => Components.Peek();
     }
 }

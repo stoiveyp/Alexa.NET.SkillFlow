@@ -1,11 +1,8 @@
 ﻿namespace Alexa.NET.SkillFlow.Terminators
 {
-    public class Restart:ISceneTerminator
+    public class Restart:SceneTerminator
     {
-        public string Type => nameof(Restart);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(Restart);
+
     }
 }

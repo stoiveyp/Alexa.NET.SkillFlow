@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public interface ISceneInstruction:ISkillFlowComponent
+    public abstract class SceneInstruction:SkillFlowComponent
     {
 
     }

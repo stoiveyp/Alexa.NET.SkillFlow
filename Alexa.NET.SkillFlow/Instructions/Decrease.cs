@@ -1,6 +1,6 @@
 ﻿namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class Decrease : ISceneInstruction
+    public class Decrease : SceneInstruction
     {
         public Decrease(string variable, int amount)
         {
@@ -12,10 +12,6 @@
 
         public string Variable { get; set; }
 
-        public string Type => nameof(Decrease);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(Decrease);
     }
 }
