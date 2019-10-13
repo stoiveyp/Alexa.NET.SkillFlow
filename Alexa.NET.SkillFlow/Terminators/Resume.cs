@@ -4,12 +4,9 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Terminators
 {
-    public class Resume : ISceneTerminator
+    public class Resume : SceneTerminator
     {
-        public string Type => nameof(Resume);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(Resume);
+
     }
 }

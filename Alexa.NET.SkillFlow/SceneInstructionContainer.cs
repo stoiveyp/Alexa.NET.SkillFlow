@@ -4,15 +4,13 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public abstract class SceneInstructionContainer
+    public abstract class SceneInstructionContainer:SceneInstruction
     {
-        public abstract string Type { get; }
+        public List<SceneInstruction> Instructions { get; set; } = new List<SceneInstruction>();
 
-        public abstract bool Group { get; }
-        public List<ISceneInstruction> Instructions { get; set; } = new List<ISceneInstruction>();
-        public void Add(ISkillFlowComponent component)
+        public override void Add(SkillFlowComponent component)
         {
-            if (component is ISceneInstruction instruction)
+            if (component is SceneInstruction instruction)
             {
                 Instructions.Add(instruction);
             }

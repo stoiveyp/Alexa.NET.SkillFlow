@@ -1,11 +1,7 @@
 ﻿namespace Alexa.NET.SkillFlow.Terminators
 {
-    public class Pause : ISceneTerminator
+    public class Pause : SceneTerminator
     {
-        public string Type => nameof(Pause);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(Pause);
     }
 }

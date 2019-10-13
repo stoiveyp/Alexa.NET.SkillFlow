@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class VisualProperty : ISkillFlowComponent
+    public class VisualProperty : SkillFlowComponent
     {
         public VisualProperty() { }
 
@@ -17,10 +17,7 @@ namespace Alexa.NET.SkillFlow
         public string Key { get; set; }
 
         public string Value { get; set; }
-        public string Type => nameof(VisualProperty);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw new NotImplementedException();
-        }
+        public override string Type => nameof(VisualProperty);
+
     }
 }

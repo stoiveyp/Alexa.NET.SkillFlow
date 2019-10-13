@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class GoTo:ISceneInstruction
+    public class GoTo:SceneInstruction
     {
         public GoTo() { }
 
@@ -13,10 +13,6 @@ namespace Alexa.NET.SkillFlow.Instructions
             SceneName = sceneName;
         }
         public string SceneName { get; set; }
-        public string Type => nameof(GoTo);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(GoTo);
     }
 }

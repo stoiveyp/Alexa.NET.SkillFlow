@@ -5,7 +5,7 @@ using Alexa.NET.SkillFlow.Conditions;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class If: SceneInstructionContainer,ISceneInstruction
+    public class If: SceneInstructionContainer
     {
         public If() { }
 

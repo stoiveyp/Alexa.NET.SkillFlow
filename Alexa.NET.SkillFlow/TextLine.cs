@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class TextLine:ISkillFlowComponent
+    public class TextLine:SkillFlowComponent
     {
         public TextLine(string text)
         {
@@ -13,10 +13,7 @@ namespace Alexa.NET.SkillFlow
 
         public string Text { get; set; }
 
-        public string Type => nameof(TextLine);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw new NotImplementedException();
-        }
+        public override string Type => nameof(TextLine);
+
     }
 }

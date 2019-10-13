@@ -5,9 +5,9 @@ using Alexa.NET.SkillFlow.Conditions;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class Unflag : ISceneInstruction
+    public class Unflag : SceneInstruction
     {
-        public string Type => nameof(Unflag);
+        public override string Type => nameof(Unflag);
 
         public string Variable { get; set; }
 
@@ -17,9 +17,5 @@ namespace Alexa.NET.SkillFlow.Instructions
             Variable = variable;
         }
 
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
     }
 }
