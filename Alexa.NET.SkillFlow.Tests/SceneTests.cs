@@ -1,4 +1,6 @@
-﻿using Alexa.NET.SkillFlow.Interpreter;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Alexa.NET.SkillFlow.Interpreter;
 using Xunit;
 
 namespace Alexa.NET.SkillFlow.Tests
@@ -36,14 +38,19 @@ namespace Alexa.NET.SkillFlow.Tests
             Assert.Throws<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene &&", DefaultContext));
         }
 
-        [Fact]
-        public void GeneratesScene()
+        [Theory]
+        [InlineData("@scene test", "test")]
+        [InlineData("@start", "start")]
+        [InlineData("@resume", "resume")]
+        [InlineData("@pause", "pause")]
+        [InlineData("@global prepend", "global prepend")]
+        [InlineData("@global append", "global append")]
+        public async Task GeneratesScene(string text, string name)
         {
-            var interpreter = new SceneInterpreter();
-            var context = DefaultContext;
-            var result = interpreter.Interpret("@scene test", context);
-            var scene = Assert.IsType<Scene>(result.Component);
-            Assert.Equal("test", scene.Name);
+            var interpreter = new SkillFlowInterpreter();
+            var result = await interpreter.Interpret(text);
+            var scene = Assert.IsType<Scene>(result.Scenes.Single().Value);
+            Assert.Equal(name, scene.Name);
         }
 
         [Fact]
