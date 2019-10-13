@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class Clear : ISceneInstruction
+    public class Clear : SceneInstruction
     {
         public string Variable { get; set; }
 
@@ -15,10 +15,6 @@ namespace Alexa.NET.SkillFlow.Instructions
             Variable = variable;
         }
 
-        public string Type => nameof(Clear);
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
+        public override string Type => nameof(Clear);
     }
 }

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Visual:ISkillFlowComponent
+    public class Visual:SkillFlowComponent
     {
-        public string Type => nameof(Visual);
+        public override string Type => nameof(Visual);
 
         private VisualProperty _template;
         private VisualProperty _background;
@@ -17,7 +17,7 @@ namespace Alexa.NET.SkillFlow
         public string Title => _title.Value;
         public string Subtitle => _subtitle.Value;
 
-        public void Add(ISkillFlowComponent component)
+        public override void Add(SkillFlowComponent component)
         {
             switch (component)
             {

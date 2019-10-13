@@ -4,13 +4,9 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class GoToAndReturn : ISceneInstruction
+    public class GoToAndReturn : SceneInstruction
     {
-        public string Type => nameof(GoToAndReturn);
+        public override string Type => nameof(GoToAndReturn);
 
-        public void Add(ISkillFlowComponent component)
-        {
-            throw this.InvalidComponent(component);
-        }
     }
 }

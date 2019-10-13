@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Terminators
 {
-    public interface ISceneTerminator:ISceneInstruction
+    public abstract class SceneTerminator:SceneInstruction
     {
 
     }

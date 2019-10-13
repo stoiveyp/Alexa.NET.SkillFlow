@@ -4,12 +4,12 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Story:ISkillFlowComponent
+    public class Story:SkillFlowComponent
     {
         public Dictionary<string,Scene> Scenes { get; set; } = new Dictionary<string, Scene>();
-        public string Type => "Story";
+        public override string Type => nameof(Story);
 
-        public void Add(ISkillFlowComponent component)
+        public override void Add(SkillFlowComponent component)
         {
             switch (component)
             {

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Scene : ISkillFlowComponent
+    public class Scene : SkillFlowComponent
     {
         public Scene() { }
 
@@ -14,8 +14,8 @@ namespace Alexa.NET.SkillFlow
         }
 
         public string Name { get; set; }
-        public string Type => nameof(Scene);
-        public void Add(ISkillFlowComponent component)
+        public override string Type => nameof(Scene);
+        public override void Add(SkillFlowComponent component)
         {
             if (component is Text text)
             {
