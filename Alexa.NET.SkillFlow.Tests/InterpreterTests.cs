@@ -55,14 +55,6 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public async Task ThrowsOnIncorrectTab()
-        {
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret("\t\t@scene test"));
-            Assert.Equal(1,ex.LineNumber);
-            Assert.Equal("1: Out of place indent",ex.Message);
-        }
-
-        [Fact]
         public async Task ThrowsOnInvalidSkillFlow()
         {
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret($"@scene test {Environment.NewLine} ~"));
@@ -112,7 +104,7 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task ThrowOnBadGroupEndIndent()
         {
             var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
-            var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
+            var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n@test2"));
             Assert.StartsWith("5: Unclosed group", exception.Message);
         }
 
