@@ -21,7 +21,11 @@ namespace Alexa.NET.SkillFlow
 
         public Dictionary<Type, List<ISkillFlowInterpreter>> Interpreters = new Dictionary<Type, List<ISkillFlowInterpreter>>
         {
-            {typeof(Story),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new SceneInterpreter()}) },
+            {typeof(Story),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
+            {
+                new SceneInterpreter(),
+                new SpecialSceneInterpreter() 
+            }) },
             {typeof(Scene),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new ScenePropertyInterpreter()}) },
             {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new MultiLineInterpreter()}) },
             {typeof(Visual),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new VisualPropertyInterpreter()}) },
@@ -32,7 +36,9 @@ namespace Alexa.NET.SkillFlow
                 new IfInterpreter(),
                 new SetInterpreter(),
                 new IncrementInterpreter(),
-                new FlagInterpreter()
+                new FlagInterpreter(),
+                new TerminatorInterpreter(),
+                new ClearInterpreter()
             }) }
         };
 
