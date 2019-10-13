@@ -44,6 +44,7 @@ namespace Alexa.NET.SkillFlow
                 new FlagInterpreter(),
                 new TerminatorInterpreter(),
                 new ClearInterpreter(),
+                new SlotAssignmentInterpreter(), 
                 new CloseInstructionGroupInterpreter()
             }) }
         };
