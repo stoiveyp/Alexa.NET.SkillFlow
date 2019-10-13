@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.IO.Pipelines;
+using System.Linq;
 using System.Threading.Tasks;
 using Alexa.NET.SkillFlow.Interpreter;
 using Xunit;
@@ -72,7 +73,7 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task ThrowWhenInterpreterDoesntMove()
         {
             var interpreter = new SkillFlowInterpreter();
-            interpreter.Interpreters[typeof(Scene)].Add(new NoMoveInterpreter());
+            interpreter.TypedInterpreters[typeof(Scene)].Add(new NoMoveInterpreter());
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
             Assert.Equal(2, ex.LineNumber);
         }
@@ -102,7 +103,7 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task ThrowsWhenUnableToFindInterpreters()
         {
             var interpreter = new SkillFlowInterpreter();
-            interpreter.Interpreters.Remove(typeof(Story));
+            interpreter.TypedInterpreters.Remove(typeof(Story));
             var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene test"));
             Assert.Contains("children",exception.Message);
         }
@@ -112,6 +113,28 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
             await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
+        }
+
+        [Fact]
+        public async Task CommentsAreAttachedToComponent()
+        {
+            var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
+            var result = await interpreter.Interpret("//This is a comment\n//This is another comment\n@test");
+            var scene = result.Scenes.First().Value;
+            Assert.Equal(2,scene.Comments.Length);
+            Assert.Equal("This is a comment",scene.Comments.First());
+            Assert.Equal("This is another comment", scene.Comments.Skip(1).First());
+        }
+
+        [Fact]
+        public async Task CommentsClearedOnAttachment()
+        {
+            var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
+            var result = await interpreter.Interpret("//This is a comment\n//This is another comment\n@test\n\t//This is for say\n\t*say\n\t\tTest say statement");
+            var scene = result.Scenes.First().Value;
+            var say = scene.Say;
+            var comment = Assert.Single(say.Comments);
+            Assert.Equal("This is for say",comment);
         }
     }
 }

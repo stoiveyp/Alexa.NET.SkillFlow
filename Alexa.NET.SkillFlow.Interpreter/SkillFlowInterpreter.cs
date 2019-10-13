@@ -19,7 +19,12 @@ namespace Alexa.NET.SkillFlow
             _options = options ?? new SkillFlowInterpretationOptions();
         }
 
-        public Dictionary<Type, List<ISkillFlowInterpreter>> Interpreters = new Dictionary<Type, List<ISkillFlowInterpreter>>
+        public List<ISkillFlowInterpreter> CommonInterpreters = new List<ISkillFlowInterpreter>
+        {
+            new CommentInterpreter()
+        };
+
+        public Dictionary<Type, List<ISkillFlowInterpreter>> TypedInterpreters = new Dictionary<Type, List<ISkillFlowInterpreter>>
         {
             {typeof(Story),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
             {
@@ -135,7 +140,7 @@ namespace Alexa.NET.SkillFlow
                 var used = buffer.Start;
 
                 Type currentType = context.CurrentComponent.GetType();
-                while (currentType != null && !Interpreters.ContainsKey(currentType))
+                while (currentType != null && !TypedInterpreters.ContainsKey(currentType))
                 {
                     currentType = currentType.BaseType;
                 }
@@ -146,7 +151,7 @@ namespace Alexa.NET.SkillFlow
                         $"No children allowed on {context.CurrentComponent.Type}", context.LineNumber);
                 }
 
-                var interpreter = Interpreters[currentType].FirstOrDefault(i => i.CanInterpret(candidate, context));
+                var interpreter = CommonInterpreters.Concat(TypedInterpreters[currentType]).FirstOrDefault(i => i.CanInterpret(candidate, context));
 
                 if (interpreter != null)
                 {
@@ -155,6 +160,8 @@ namespace Alexa.NET.SkillFlow
                         var result = interpreter.Interpret(candidate, context);
                         if (!InterpreterResult.IsEmpty(result))
                         {
+                            result.Component.Comments = context.Comments.ToArray();
+                            context.Comments.Clear();
                             context.CurrentComponent.Add(result.Component);
                             context.Components.Push(result.Component);
                         }

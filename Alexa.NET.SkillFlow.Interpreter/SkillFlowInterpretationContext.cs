@@ -13,6 +13,8 @@ namespace Alexa.NET.SkillFlow.Interpreter
             Components.Push(Story);
         }
 
+        public List<string> Comments { get; } = new List<string>();
+
         public Story Story { get; }
 
         public SkillFlowInterpretationOptions Options { get; }
