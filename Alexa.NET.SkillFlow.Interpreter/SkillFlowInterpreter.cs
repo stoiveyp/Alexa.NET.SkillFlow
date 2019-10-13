@@ -29,10 +29,10 @@ namespace Alexa.NET.SkillFlow
             {typeof(Story),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
             {
                 new SceneInterpreter(),
-                new SpecialSceneInterpreter() 
+                new SpecialSceneInterpreter()
             }) },
             {typeof(Scene),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new ScenePropertyInterpreter()}) },
-            {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new MultiLineInterpreter()}) },
+            {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{ new ScenePropertyInterpreter(),new MultiLineInterpreter()}) },
             {typeof(Visual),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new VisualPropertyInterpreter()}) },
             {typeof(SceneInstructionContainer),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
             {
@@ -44,6 +44,7 @@ namespace Alexa.NET.SkillFlow
                 new FlagInterpreter(),
                 new TerminatorInterpreter(),
                 new ClearInterpreter(),
+                new SlotAssignmentInterpreter(), 
                 new CloseInstructionGroupInterpreter()
             }) }
         };
@@ -109,80 +110,79 @@ namespace Alexa.NET.SkillFlow
 
                 context.LineNumber++;
 
-
-                var currentLevel = 1;
-                for (var checkPos = 0; checkPos < osb.Length; checkPos++)
-                {
-                    if (osb[checkPos] == '\t')
-                    {
-                        currentLevel++;
-                    }
-                    else
-                    {
-                        if (currentLevel > context.Components.Count + 1)
-                        {
-                            throw new InvalidSkillFlowDefinitionException("Out of place indent", context.LineNumber);
-                        }
-
-                        while (currentLevel < context.Components.Count)
-                        {
-                            if (context.CurrentComponent is SceneInstructionContainer container && container.Group)
-                            {
-                                throw new InvalidSkillFlowDefinitionException("Unclosed group or group closure isn't indented correctly'", context.LineNumber);
-                            }
-                            context.Components.Pop();
-                        }
-
-                        break;
-                    }
-                }
-
-
-                currentLevel--;
-                var candidate = osb.ToString(currentLevel, osb.Length - currentLevel);
-
+                var candidate = osb.ToString().Trim();
                 var used = buffer.Start;
 
-                Type currentType = context.CurrentComponent.GetType();
-                while (currentType != null && !TypedInterpreters.ContainsKey(currentType))
+                if (string.IsNullOrWhiteSpace(candidate))
                 {
-                    currentType = currentType.BaseType;
+                    used = buffer.GetPosition(osb.Length + (hitLineBreak ? context.Options.LineEnding.Length : 0));
+                    reader.AdvanceTo(used, examined);
+                    continue;
+                }
+
+                Type errorType = context.CurrentComponent.GetType();
+                Type currentType = null;
+                ISkillFlowInterpreter interpreter = null;
+                while (currentType == null && context.Components.Any())
+                {
+                    currentType = context.CurrentComponent.GetType();
+                    while (currentType != null && !TypedInterpreters.ContainsKey(currentType))
+                    {
+                        currentType = currentType.BaseType;
+                    }
+
+                    if (currentType != null)
+                    {
+                        interpreter = CommonInterpreters.Concat(TypedInterpreters[currentType]).FirstOrDefault(i => i.CanInterpret(candidate, context));
+                        if (interpreter == null)
+                        {
+                            currentType = null;
+                        }
+
+                    }
+
+                    if (currentType == null)
+                    {
+                        if (context.CurrentComponent is SceneInstructionContainer container && container.Group)
+                        {
+                            throw new InvalidSkillFlowDefinitionException("Unclosed group", context.LineNumber);
+                        }
+
+                        if (context.Components.Count > 1)
+                        {
+                            context.Components.Pop();
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
                 }
 
                 if (currentType == null)
                 {
                     throw new InvalidSkillFlowDefinitionException(
-                        $"No children allowed on {context.CurrentComponent.Type}", context.LineNumber);
+                        $"Unknown definition for {errorType.Name} - \"{candidate}\"", context.LineNumber);
                 }
 
-                var interpreter = CommonInterpreters.Concat(TypedInterpreters[currentType]).FirstOrDefault(i => i.CanInterpret(candidate, context));
-
-                if (interpreter != null)
+                try
                 {
-                    try
+                    var result = interpreter.Interpret(candidate, context);
+                    if (!InterpreterResult.IsEmpty(result))
                     {
-                        var result = interpreter.Interpret(candidate, context);
-                        if (!InterpreterResult.IsEmpty(result))
-                        {
-                            result.Component.Comments = context.Comments.ToArray();
-                            context.Comments.Clear();
-                            context.CurrentComponent.Add(result.Component);
-                            context.Components.Push(result.Component);
-                        }
+                        result.Component.Comments = context.Comments.ToArray();
+                        context.Comments.Clear();
+                        context.CurrentComponent.Add(result.Component);
+                        context.Components.Push(result.Component);
                     }
-                    catch (InvalidSkillFlowException invalidSkillFlow)
-                    {
-                        throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
-                    }
-
-                    used = buffer.GetPosition(candidate.Length + (hitLineBreak ? context.Options.LineEnding.Length : 0) + currentLevel);
                 }
-                else
+                catch (InvalidSkillFlowException invalidSkillFlow)
                 {
-                    throw new InvalidSkillFlowDefinitionException($"Unrecognised skill flow: " + candidate,
-                        context.LineNumber);
+                    throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
                 }
 
+                
+                used = buffer.GetPosition(osb.Length + (hitLineBreak ? context.Options.LineEnding.Length : 0));
                 reader.AdvanceTo(used, examined);
             }
 

@@ -55,26 +55,9 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public async Task ThrowsOnIncorrectTab()
-        {
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret("\t\t@scene test"));
-            Assert.Equal(1,ex.LineNumber);
-            Assert.Equal("Out of place indent",ex.Message);
-        }
-
-        [Fact]
         public async Task ThrowsOnInvalidSkillFlow()
         {
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret($"@scene test {Environment.NewLine} ~"));
-            Assert.Equal(2, ex.LineNumber);
-        }
-
-        [Fact]
-        public async Task ThrowWhenInterpreterDoesntMove()
-        {
-            var interpreter = new SkillFlowInterpreter();
-            interpreter.TypedInterpreters[typeof(Scene)].Add(new NoMoveInterpreter());
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
             Assert.Equal(2, ex.LineNumber);
         }
 
@@ -105,15 +88,15 @@ namespace Alexa.NET.SkillFlow.Tests
             var interpreter = new SkillFlowInterpreter();
             interpreter.TypedInterpreters.Remove(typeof(Story));
             var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene test"));
-            Assert.Contains("children",exception.Message);
+            Assert.StartsWith("1: Unknown definition for Story",exception.Message);
         }
 
         [Fact]
         public async Task ThrowOnBadGroupEndIndent()
         {
             var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
-            var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
-            Assert.StartsWith("Unclosed group", exception.Message);
+            var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n@test2"));
+            Assert.StartsWith("5: Unclosed group", exception.Message);
         }
 
         [Fact]

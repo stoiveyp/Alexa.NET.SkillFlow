@@ -16,10 +16,19 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
+        public void CorrectlyIdentifiesVariable()
+        {
+            var interpreter = new SetInterpreter();
+            var context = new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions());
+            context.Components.Push(new SceneInstructions());
+            Assert.True(interpreter.CanInterpret("set test as testSlot", context));
+        }
+
+        [Fact]
         public void CorrectlyIdentifiesFalseText()
         {
             var interpreter = new SetInterpreter();
-            Assert.False(interpreter.CanInterpret("set test to test", new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
+            Assert.False(interpreter.CanInterpret("setting test to test", new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions())));
         }
 
         [Fact]
@@ -30,7 +39,7 @@ namespace Alexa.NET.SkillFlow.Tests
                 new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
             var instruction = Assert.IsType<Set>(result.Component);
             Assert.Equal("test", instruction.Variable);
-            Assert.Equal(3, instruction.Amount);
+            Assert.Equal(3.ToString(), instruction.Value);
         }
 
         [Fact]
