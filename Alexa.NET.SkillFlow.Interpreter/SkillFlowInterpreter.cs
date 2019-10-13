@@ -38,7 +38,8 @@ namespace Alexa.NET.SkillFlow
                 new IncrementInterpreter(),
                 new FlagInterpreter(),
                 new TerminatorInterpreter(),
-                new ClearInterpreter()
+                new ClearInterpreter(),
+                new CloseInstructionGroupInterpreter()
             }) }
         };
 
@@ -152,12 +153,11 @@ namespace Alexa.NET.SkillFlow
                     try
                     {
                         var result = interpreter.Interpret(candidate, context);
-                        if (result.Component == null)
+                        if (!InterpreterResult.IsEmpty(result))
                         {
-                            throw new InvalidSkillFlowDefinitionException("Unable to parse", context.LineNumber);
+                            context.CurrentComponent.Add(result.Component);
+                            context.Components.Push(result.Component);
                         }
-                        context.CurrentComponent.Add(result.Component);
-                        context.Components.Push(result.Component);
                     }
                     catch (InvalidSkillFlowException invalidSkillFlow)
                     {

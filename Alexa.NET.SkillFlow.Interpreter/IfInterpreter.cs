@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Alexa.NET.SkillFlow.Instructions;
 
 namespace Alexa.NET.SkillFlow.Interpreter
 {
@@ -13,7 +14,10 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return InterpreterResult.Empty;
+            var conditionText = candidate.Substring(3, candidate.Length - 4);
+            var condition = ConditionParser.Parse(conditionText);
+            return new InterpreterResult(new If(condition));
+            
         }
     }
 }

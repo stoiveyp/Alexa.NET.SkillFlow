@@ -4,10 +4,8 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Conditions
 {
-    public class Not:Condition
+    public class Not:UnaryCondition
     {
-        public Condition Condition { get; set; }
-
         public Not() { }
 
         public Not(Condition condition)

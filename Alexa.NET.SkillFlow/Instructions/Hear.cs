@@ -21,6 +21,7 @@ namespace Alexa.NET.SkillFlow.Instructions
             Phrases = new List<string>(phrases);
         }
 
+        public override bool Group => true;
         public List<string> Phrases { get; set; }
         public override string Type => nameof(Hear);
     }

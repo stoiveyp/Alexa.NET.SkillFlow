@@ -7,6 +7,8 @@ namespace Alexa.NET.SkillFlow
     public abstract class SceneInstructionContainer
     {
         public abstract string Type { get; }
+
+        public abstract bool Group { get; }
         public List<ISceneInstruction> Instructions { get; set; } = new List<ISceneInstruction>();
         public void Add(ISkillFlowComponent component)
         {
