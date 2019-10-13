@@ -13,11 +13,14 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task TestStoryParse()
         {
             var interpreter = new SkillFlowInterpreter();
+            Story story = null;
             using (var stream = File.OpenRead("Examples/story.abc"))
             {
-                var model = await interpreter.Interpret(stream);
-                Assert.NotNull(model);
+                story = await interpreter.Interpret(stream);
             }
+
+            Assert.NotNull(story);
+            Assert.Equal(22,story.Scenes.Count);
         }
     }
 }
