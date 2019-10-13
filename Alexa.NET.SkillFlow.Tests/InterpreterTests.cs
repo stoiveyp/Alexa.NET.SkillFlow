@@ -59,7 +59,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => new SkillFlowInterpreter().Interpret("\t\t@scene test"));
             Assert.Equal(1,ex.LineNumber);
-            Assert.Equal("Out of place indent",ex.Message);
+            Assert.Equal("1: Out of place indent",ex.Message);
         }
 
         [Fact]
@@ -113,7 +113,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var interpreter = new SkillFlowInterpreter(new SkillFlowInterpretationOptions { LineEnding = "\n" });
             var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@test\n\t*then\n\t\tif !test {\n\t\t\tflag test\n\t}"));
-            Assert.StartsWith("Unclosed group", exception.Message);
+            Assert.StartsWith("5: Unclosed group", exception.Message);
         }
 
         [Fact]

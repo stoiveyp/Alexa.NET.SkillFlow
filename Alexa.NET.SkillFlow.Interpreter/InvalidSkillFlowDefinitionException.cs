@@ -7,7 +7,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
     public class InvalidSkillFlowDefinitionException:Exception
     {
         public InvalidSkillFlowDefinitionException(string message, int lineNumber)
-        :base(message)
+        :base($"{lineNumber}: {message}")
         {
             LineNumber = lineNumber;
         }

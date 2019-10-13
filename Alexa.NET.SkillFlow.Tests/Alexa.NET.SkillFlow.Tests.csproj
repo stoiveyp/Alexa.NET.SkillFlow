@@ -17,4 +17,14 @@
     <ProjectReference Include="..\Alexa.NET.SkillFlow.Interpreter\Alexa.NET.SkillFlow.Interpreter.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Examples\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Examples\story.abc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
