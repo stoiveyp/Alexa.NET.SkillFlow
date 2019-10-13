@@ -62,15 +62,6 @@ namespace Alexa.NET.SkillFlow.Tests
         }
 
         [Fact]
-        public async Task ThrowWhenInterpreterDoesntMove()
-        {
-            var interpreter = new SkillFlowInterpreter();
-            interpreter.TypedInterpreters[typeof(Scene)].Add(new NoMoveInterpreter());
-            var ex = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret($"@scene test {Environment.NewLine}~"));
-            Assert.Equal(2, ex.LineNumber);
-        }
-
-        [Fact]
         public async Task MultilineAddsToCorrectComponent()
         {
             var interpreter = new SkillFlowInterpreter();
@@ -97,7 +88,7 @@ namespace Alexa.NET.SkillFlow.Tests
             var interpreter = new SkillFlowInterpreter();
             interpreter.TypedInterpreters.Remove(typeof(Story));
             var exception = await Assert.ThrowsAsync<InvalidSkillFlowDefinitionException>(() => interpreter.Interpret("@scene test"));
-            Assert.Contains("children",exception.Message);
+            Assert.StartsWith("1: Unknown definition for Story",exception.Message);
         }
 
         [Fact]

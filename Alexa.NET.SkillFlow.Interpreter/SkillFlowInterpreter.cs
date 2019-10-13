@@ -29,10 +29,10 @@ namespace Alexa.NET.SkillFlow
             {typeof(Story),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
             {
                 new SceneInterpreter(),
-                new SpecialSceneInterpreter() 
+                new SpecialSceneInterpreter()
             }) },
             {typeof(Scene),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new ScenePropertyInterpreter()}) },
-            {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new MultiLineInterpreter()}) },
+            {typeof(Text),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{ new ScenePropertyInterpreter(),new MultiLineInterpreter()}) },
             {typeof(Visual),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]{new VisualPropertyInterpreter()}) },
             {typeof(SceneInstructionContainer),new List<ISkillFlowInterpreter>(new ISkillFlowInterpreter[]
             {
@@ -110,9 +110,16 @@ namespace Alexa.NET.SkillFlow
                 context.LineNumber++;
 
                 var candidate = osb.ToString().Trim();
-
                 var used = buffer.Start;
 
+                if (string.IsNullOrWhiteSpace(candidate))
+                {
+                    used = buffer.GetPosition(osb.Length + (hitLineBreak ? context.Options.LineEnding.Length : 0));
+                    reader.AdvanceTo(used, examined);
+                    continue;
+                }
+
+                Type errorType = context.CurrentComponent.GetType();
                 Type currentType = null;
                 ISkillFlowInterpreter interpreter = null;
                 while (currentType == null && context.Components.Any())
@@ -130,13 +137,14 @@ namespace Alexa.NET.SkillFlow
                         {
                             currentType = null;
                         }
+
                     }
 
                     if (currentType == null)
                     {
                         if (context.CurrentComponent is SceneInstructionContainer container && container.Group)
                         {
-                            throw new InvalidSkillFlowDefinitionException("Unclosed group",context.LineNumber);
+                            throw new InvalidSkillFlowDefinitionException("Unclosed group", context.LineNumber);
                         }
 
                         if (context.Components.Count > 1)
@@ -153,7 +161,7 @@ namespace Alexa.NET.SkillFlow
                 if (currentType == null)
                 {
                     throw new InvalidSkillFlowDefinitionException(
-                        $"No children allowed on {context.CurrentComponent.Type}", context.LineNumber);
+                        $"Unknown definition for {errorType.Name} - \"{candidate}\"", context.LineNumber);
                 }
 
                 try
@@ -172,8 +180,8 @@ namespace Alexa.NET.SkillFlow
                     throw new InvalidSkillFlowDefinitionException(invalidSkillFlow.Message, context.LineNumber);
                 }
 
+                
                 used = buffer.GetPosition(osb.Length + (hitLineBreak ? context.Options.LineEnding.Length : 0));
-
                 reader.AdvanceTo(used, examined);
             }
 

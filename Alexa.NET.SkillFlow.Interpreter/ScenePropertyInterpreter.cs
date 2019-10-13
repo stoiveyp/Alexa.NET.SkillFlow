@@ -19,6 +19,10 @@ namespace Alexa.NET.SkillFlow.Interpreter
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
         {
+            if (context.CurrentComponent is Text)
+            {
+                context.Components.Pop();
+            }
             var property = candidate.Substring(1);
             switch (property)
             {
