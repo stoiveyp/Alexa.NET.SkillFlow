@@ -10,8 +10,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
     {
         public bool CanInterpret(string candidate, SkillFlowInterpretationContext context)
         {
-            return (context.CurrentComponent is SceneInstructions || context.CurrentComponent is ISceneInstruction)
-                   && candidate.Length > 7 && candidate.StartsWith("hear ") && candidate.EndsWith("{");
+            return candidate.Length > 7 && candidate.StartsWith("hear ") && candidate.EndsWith("{");
         }
 
         public InterpreterResult Interpret(string candidate, SkillFlowInterpretationContext context)
