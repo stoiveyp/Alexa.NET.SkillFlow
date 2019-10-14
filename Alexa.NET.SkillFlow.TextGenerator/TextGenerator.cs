@@ -4,7 +4,7 @@ using Alexa.NET.SkillFlow.Generator;
 
 namespace Alexa.NET.SkillFlow.TextGenerator
 {
-    public class TextGenerator:SkillFlowGenerator<TextGeneratorContext>
+    public class TextGenerator : SkillFlowGenerator<TextGeneratorContext>
     {
         protected override async Task Begin(Scene scene, TextGeneratorContext context)
         {
@@ -18,6 +18,23 @@ namespace Alexa.NET.SkillFlow.TextGenerator
             {
                 await context.WriteLine($"//{comment}");
             }
+        }
+
+        protected override async Task Begin(Visual story, TextGeneratorContext context)
+        {
+            await context.WriteLine("*show");
+            context.CurrentLevel++;
+        }
+
+        protected override Task End(Visual story, TextGeneratorContext context)
+        {
+            context.CurrentLevel--;
+            return Noop(context);
+        }
+
+        protected override async Task Begin(VisualProperty story, TextGeneratorContext context)
+        {
+            await context.WriteLine($"{story.Key}: \'{story.Value}\'");
         }
 
         protected override async Task Begin(Text text, TextGeneratorContext context)

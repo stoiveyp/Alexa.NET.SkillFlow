@@ -35,7 +35,7 @@ namespace Alexa.NET.SkillFlow.Generator
             await End(story, context);
         }
 
-        public async Task Generate(Text text, TContext context)
+        protected async Task Generate(Text text, TContext context)
         {
             if (text == null)
             {
@@ -45,6 +45,41 @@ namespace Alexa.NET.SkillFlow.Generator
             await Begin(text, context);
             await RenderText(text.Content, context);
             await End(text, context);
+        }
+
+        protected async Task Generate(Visual visual, TContext context)
+        {
+            if (visual == null)
+            {
+                return;
+            }
+
+            await Begin(visual, context);
+            if (visual.Template != null)
+            {
+                await Begin(visual.Template, context);
+                await End(visual.Template, context);
+            }
+
+            if (visual.Background != null)
+            {
+                await Begin(visual.Background, context);
+                await End(visual.Background, context);
+            }
+
+            if (visual.Title != null)
+            {
+                await Begin(visual.Title, context);
+                await End(visual.Title, context);
+            }
+
+            if (visual.Subtitle != null)
+            {
+                await Begin(visual.Subtitle, context);
+                await End(visual.Subtitle, context);
+            }
+
+            await End(visual, context);
         }
 
         protected virtual Task RenderText(List<string> textContent, TContext context)
@@ -71,12 +106,15 @@ namespace Alexa.NET.SkillFlow.Generator
             await GenerateComment(scene.Reprompt, context);
             await Generate(scene.Reprompt, context);
 
+            await GenerateComment(scene.Visual, context);
+            await Generate(scene.Visual, context);
+
             await End(scene, context);
         }
 
         private Task GenerateComment(SkillFlowComponent component, TContext context)
         {
-            if (component == null || component.Comments == null || !component.Comments.Any())
+            if (component?.Comments == null || !component.Comments.Any())
             {
                 return Noop(context);
             }
@@ -105,6 +143,26 @@ namespace Alexa.NET.SkillFlow.Generator
         }
 
         protected virtual Task End(Story story, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task Begin(Visual story, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task End(Visual story, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task Begin(VisualProperty story, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task End(VisualProperty story, TContext context)
         {
             return Noop(context);
         }

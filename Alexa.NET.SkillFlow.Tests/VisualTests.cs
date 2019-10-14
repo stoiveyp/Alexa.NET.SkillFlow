@@ -20,7 +20,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var visual = new Visual();
             visual.Add(new VisualProperty("template", "test"));
-            Assert.Equal("test", visual.Template);
+            Assert.Equal("test", visual.Template.Value);
         }
 
         [Fact]
@@ -28,7 +28,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var visual = new Visual();
             visual.Add(new VisualProperty("background", "test"));
-            Assert.Equal("test", visual.Background);
+            Assert.Equal("test", visual.Background.Value);
         }
 
         [Fact]
@@ -36,7 +36,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var visual = new Visual();
             visual.Add(new VisualProperty("title", "test"));
-            Assert.Equal("test", visual.Title);
+            Assert.Equal("test", visual.Title.Value);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var visual = new Visual();
             visual.Add(new VisualProperty("subtitle", "test"));
-            Assert.Equal("test", visual.Subtitle);
+            Assert.Equal("test", visual.Subtitle.Value);
         }
 
         [Fact]

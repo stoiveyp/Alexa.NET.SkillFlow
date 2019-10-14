@@ -51,6 +51,19 @@ namespace Alexa.NET.SkillFlow.Tests
             Assert.Equal("//this is a comment\n@test this thing\n", output);
         }
 
+        [Fact]
+        public async Task VisualGeneratesProperly()
+        {
+            var story = new Story();
+            var scene = new Scene {Name = "test this thing"};
+            var visual = new Visual();
+            visual.Add(new VisualProperty("template","default"));
+            scene.Add(visual);
+            story.Scenes.Add("test", scene);
+            var output = await OutputStory(story);
+            Assert.Equal("@test this thing\n\t*show\n\t\ttemplate: 'default'\n", output);
+        }
+
         private async Task<string> OutputStory(Story story)
         {
             var stream = new MemoryStream();
