@@ -16,7 +16,7 @@ namespace Alexa.NET.SkillFlow.TextGenerator
 
         public Encoding Encoding { get; set; } = Encoding.UTF8;
 
-        public string LineEnding { get; } = Environment.NewLine;
+        public string LineEnding { get; set; } = Environment.NewLine;
 
         public string Indent { get; set; } = "\t";
 
@@ -39,6 +39,11 @@ namespace Alexa.NET.SkillFlow.TextGenerator
         public TextGeneratorContext(PipeWriter writer)
         {
             Writer = writer;
+        }
+
+        public TextGeneratorContext(Stream stream):this(PipeWriter.Create(stream))
+        {
+            
         }
     }
 }

@@ -7,11 +7,11 @@ using Alexa.NET.SkillFlow.Generator;
 
 namespace Alexa.NET.SkillFlow.TextGenerator
 {
-    public abstract class TextGenerator:SkillFlowGenerator<TextGeneratorContext>
+    public class TextGenerator:SkillFlowGenerator<TextGeneratorContext>
     {
         protected override async Task BeginScene(Scene scene, TextGeneratorContext context)
         {
-            await context.WriteLine($"*{scene.Name}");
+            await context.WriteLine($"@{scene.Name}");
             context.CurrentLevel += 1;
         }
 
