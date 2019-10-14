@@ -1,34 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Text;
+using System.Net.Mail;
 using System.Threading.Tasks;
 
 namespace Alexa.NET.SkillFlow.Generator
 {
-    public abstract class SkillFlowGenerator<TOutput, TContext>
+    public abstract class SkillFlowGenerator<TContext>
     {
-        protected SkillFlowGenerator(Func<TContext, TOutput> finaliser, TContext initialContext)
-        {
-            Context = initialContext;
-            Finaliser = finaliser;
-        }
+        public Dictionary<Type, IComponentGenerator<TContext>> Extensions { get; } = new Dictionary<Type, IComponentGenerator<TContext>>();
 
-        public TContext Context { get; }
-
-        public Dictionary<Type,ISkillFlowGenerator<TContext>> Generators = new Dictionary<Type, ISkillFlowGenerator<TContext>>();
-
-        public Func<TContext, TOutput> Finaliser { get; }
-
-        public async Task<TOutput> Generate(Story story)
-        {
-            return Finaliser(await Generate(story,Context));
-        }
-
-        public Task<TContext> Generate(SkillFlowComponent component, TContext context)
+        protected Task<TContext> Generate(SkillFlowComponent component, TContext context)
         {
             Type currentType = component.GetType();
-            while (currentType != null && !Generators.ContainsKey(currentType))
+            while (currentType != null && !Extensions.ContainsKey(currentType))
             {
                 currentType = currentType.BaseType;
             }
@@ -37,8 +21,48 @@ namespace Alexa.NET.SkillFlow.Generator
             {
                 return Task.FromResult(context);
             }
+            return Extensions[currentType].Generate(component, context);
+        }
 
-            return Generators[currentType].Generate(component, context);
+        public async Task Generate(Story story, TContext context)
+        {
+            await BeginStory(story, context);
+            foreach(var scene in story.Scenes)
+            {
+                await Generate(scene.Value, context);
+            }
+            await EndStory(story, context);
+        }
+
+        private async Task Generate(Scene scene, TContext context)
+        {
+            await BeginScene(scene, context);
+            await EndScene(scene, context);
+        }
+
+        protected virtual Task BeginScene(Scene scene, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task BeginStory(Story story, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task EndStory(Story story, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task EndScene(Scene scene, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task Noop(TContext context)
+        {
+            return Task.FromResult(context);
         }
     }
 }

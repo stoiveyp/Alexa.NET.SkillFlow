@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Alexa.NET.SkillFlow.Generator
 {
-    public interface ISkillFlowGenerator<TContext>
+    public interface IComponentGenerator<TContext>
     {
         Task<TContext> Generate(SkillFlowComponent component, TContext context);
     }
