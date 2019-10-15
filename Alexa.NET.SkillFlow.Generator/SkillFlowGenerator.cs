@@ -34,6 +34,44 @@ namespace Alexa.NET.SkillFlow.Generator
             }
             await End(story, context);
         }
+        public async Task Generate(SceneInstructions instructions, TContext context)
+        {
+            if (instructions == null)
+            {
+                return;
+            }
+            await Begin(instructions, context);
+            foreach (var instruction in instructions.Instructions)
+            {
+                if (instruction is SceneInstructionContainer container)
+                {
+                    await Generate(container, context);
+                    continue;
+                }
+                await GenerateComment(instruction, context);
+                await Render(instruction, context);
+            }
+            await End(instructions, context);
+        }
+        public async Task Generate(SceneInstructionContainer instructions, TContext context)
+        {
+            if (instructions == null)
+            {
+                return;
+            }
+            await Begin(instructions, context);
+            foreach (var instruction in instructions.Instructions)
+            {
+                if (instruction is SceneInstructionContainer container)
+                {
+                    await Generate(container, context);
+                    continue;
+                }
+                await GenerateComment(instruction, context);
+                await Render(instruction, context);
+            }
+            await End(instructions, context);
+        }
 
         protected async Task Generate(Text text, TContext context)
         {
@@ -57,26 +95,22 @@ namespace Alexa.NET.SkillFlow.Generator
             await Begin(visual, context);
             if (visual.Template != null)
             {
-                await Begin(visual.Template, context);
-                await End(visual.Template, context);
+                await Render(visual.Template, context);
             }
 
             if (visual.Background != null)
             {
-                await Begin(visual.Background, context);
-                await End(visual.Background, context);
+                await Render(visual.Background, context);
             }
 
             if (visual.Title != null)
             {
-                await Begin(visual.Title, context);
-                await End(visual.Title, context);
+                await Render(visual.Title, context);
             }
 
             if (visual.Subtitle != null)
             {
-                await Begin(visual.Subtitle, context);
-                await End(visual.Subtitle, context);
+                await Render(visual.Subtitle, context);
             }
 
             await End(visual, context);
@@ -109,10 +143,13 @@ namespace Alexa.NET.SkillFlow.Generator
             await GenerateComment(scene.Visual, context);
             await Generate(scene.Visual, context);
 
+            await GenerateComment(scene.Instructions, context);
+            await Generate(scene.Instructions, context);
+
             await End(scene, context);
         }
 
-        private Task GenerateComment(SkillFlowComponent component, TContext context)
+        protected Task GenerateComment(SkillFlowComponent component, TContext context)
         {
             if (component?.Comments == null || !component.Comments.Any())
             {
@@ -157,12 +194,32 @@ namespace Alexa.NET.SkillFlow.Generator
             return Noop(context);
         }
 
-        protected virtual Task Begin(VisualProperty story, TContext context)
+        protected virtual Task Render(VisualProperty story, TContext context)
         {
             return Noop(context);
         }
 
-        protected virtual Task End(VisualProperty story, TContext context)
+        protected virtual Task Begin(SceneInstructions instructions, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task End(SceneInstructions instructions, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task Begin(SceneInstructionContainer instructions, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task End(SceneInstructionContainer instructions, TContext context)
+        {
+            return Noop(context);
+        }
+
+        protected virtual Task Render(SceneInstruction instruction, TContext context)
         {
             return Noop(context);
         }

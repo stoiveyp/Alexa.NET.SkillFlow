@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Alexa.NET.SkillFlow.Generator;
+using Alexa.NET.SkillFlow.Instructions;
 
 namespace Alexa.NET.SkillFlow.TextGenerator
 {
@@ -32,7 +33,63 @@ namespace Alexa.NET.SkillFlow.TextGenerator
             return Noop(context);
         }
 
-        protected override async Task Begin(VisualProperty story, TextGeneratorContext context)
+        protected override async Task Begin(SceneInstructions instructions, TextGeneratorContext context)
+        {
+            await context.WriteLine("*then");
+            context.CurrentLevel++;
+        }
+
+        protected override async Task Begin(SceneInstructionContainer instructions, TextGeneratorContext context)
+        {
+            await context.WriteIndent();
+            switch (instructions)
+            {
+                case If ifInstruction:
+                    await context.WriteString("if");
+                    break;
+                case Hear hear:
+                    await context.WriteString("hear ");
+                    var existingPhrase = false;
+                    foreach (var phrase in hear.Phrases)
+                    {
+                        if (existingPhrase)
+                        {
+                            await context.WriteString(", ");
+                        }
+                        await context.WriteString(phrase);
+                        existingPhrase = true;
+                    }
+                    break;
+            }
+            await context.WriteString(" {",true);
+            context.CurrentLevel++;
+        }
+
+        protected override async Task End(SceneInstructionContainer instructions, TextGeneratorContext context)
+        {
+            context.CurrentLevel--;
+            await context.WriteLine("}");
+        }
+
+        protected override Task End(SceneInstructions instructions, TextGeneratorContext context)
+        {
+            context.CurrentLevel--;
+            return Noop(context);
+        }
+
+        protected override Task Render(SceneInstruction instruction, TextGeneratorContext context)
+        {
+            switch (instruction)
+            {
+                case Increase increase:
+                    return context.WriteLine($"increase {increase.Variable} by {increase.Amount}");
+                default:
+                    return Noop(context);
+
+            }
+        }
+
+        protected override async Task Render(VisualProperty story, TextGeneratorContext context)
         {
             await context.WriteLine($"{story.Key}: \'{story.Value}\'");
         }

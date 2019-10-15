@@ -5,6 +5,7 @@ using System.IO.Pipelines;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Alexa.NET.SkillFlow.Instructions;
 using Alexa.NET.SkillFlow.TextGenerator;
 using Xunit;
 
@@ -45,7 +46,7 @@ namespace Alexa.NET.SkillFlow.Tests
             story.Scenes.Add("test", new Scene
             {
                 Name = "test this thing",
-                Comments = new[] {"this is a comment"}
+                Comments = new[] { "this is a comment" }
             });
             var output = await OutputStory(story);
             Assert.Equal("//this is a comment\n@test this thing\n", output);
@@ -55,13 +56,36 @@ namespace Alexa.NET.SkillFlow.Tests
         public async Task VisualGeneratesProperly()
         {
             var story = new Story();
-            var scene = new Scene {Name = "test this thing"};
+            var scene = new Scene { Name = "test this thing" };
             var visual = new Visual();
-            visual.Add(new VisualProperty("template","default"));
+            visual.Add(new VisualProperty("template", "default"));
             scene.Add(visual);
             story.Scenes.Add("test", scene);
             var output = await OutputStory(story);
             Assert.Equal("@test this thing\n\t*show\n\t\ttemplate: 'default'\n", output);
+        }
+
+        [Fact]
+        public Task IncreaseGeneratesProperly()
+        {
+            return TestInstruction(new Increase("test", 5), "increase test by 5");
+        }
+
+        [Fact]
+        public Task HearGeneratesProperly()
+        {
+            return TestInstruction(new Hear("go north", "go west"), "hear go north, go west {\n\t\t}");
+        }
+
+        public async Task TestInstruction(SceneInstruction instruction, string expectedOutput)
+        {
+            var story = new Story();
+            var scene = new Scene { Name = "test this thing" };
+            scene.Add(new SceneInstructions());
+            scene.Instructions.Add(instruction);
+            story.Scenes.Add("test", scene);
+            var output = await OutputStory(story);
+            Assert.Equal($"@test this thing\n\t*then\n\t\t{expectedOutput}\n", output);
         }
 
         private async Task<string> OutputStory(Story story)
