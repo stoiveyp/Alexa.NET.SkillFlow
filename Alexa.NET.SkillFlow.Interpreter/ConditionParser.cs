@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
 using Alexa.NET.SkillFlow.Conditions;
 using Alexa.NET.SkillFlow.Interpreter.Tokens;
 
@@ -73,7 +68,7 @@ namespace Alexa.NET.SkillFlow.Interpreter
                 var token = stack.Pop();
                 if (token is CloseGroup)
                 {
-                    token = Stack(stack, condition);
+                    token = new Group(Stack(stack, condition));
                 }
 
                 if (token is OpenGroup)
@@ -127,7 +122,10 @@ namespace Alexa.NET.SkillFlow.Interpreter
             }
             else if (stack.Any() && op is UnaryCondition unary)
             {
-                unary.Condition = HandleToken(stack.Pop(), stack);
+                if (unary.Condition == null)
+                {
+                    unary.Condition = HandleToken(stack.Pop(), stack);
+                }
             }
 
             return op;

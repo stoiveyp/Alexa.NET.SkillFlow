@@ -33,8 +33,10 @@ namespace Alexa.NET.SkillFlow.Tests
         {
             var result = ConditionParser.Parse("(false == test) == (5 > 3)");
             var equal = Assert.IsType<Equal>(result);
-            Assert.IsType<Equal>(equal.Left);
-            Assert.IsType<GreaterThan>(equal.Right);
+            var left = Assert.IsType<Group>(equal.Left);
+            Assert.IsType<Equal>(left.Condition);
+            var right = Assert.IsType<Group>(equal.Right);
+            Assert.IsType<GreaterThan>(right.Condition);
         }
     }
 }
