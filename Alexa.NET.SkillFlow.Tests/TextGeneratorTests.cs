@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.IO.Pipelines;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Alexa.NET.SkillFlow.Instructions;
+using Alexa.NET.SkillFlow.Interpreter;
 using Alexa.NET.SkillFlow.TextGenerator;
 using Xunit;
 
@@ -75,6 +73,13 @@ namespace Alexa.NET.SkillFlow.Tests
         public Task HearGeneratesProperly()
         {
             return TestInstruction(new Hear("go north", "go west"), "hear go north, go west {\n\t\t}");
+        }
+
+        [Fact]
+        public Task IfGeneratesProperly()
+        {
+            var condition = ConditionParser.Parse("(false == test) == (5 > 3)");
+            return TestInstruction(new If(condition), "if ( false == test ) == ( 5 > 3 ) {\n\t\t}");
         }
 
         public async Task TestInstruction(SceneInstruction instruction, string expectedOutput)

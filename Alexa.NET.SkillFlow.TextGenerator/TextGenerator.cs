@@ -48,7 +48,6 @@ namespace Alexa.NET.SkillFlow.TextGenerator
                 case If ifInstruction:
                     await context.WriteString("if ");
                     await RenderCondition(ifInstruction.Condition, context);
-                    await context.WriteString(" {", true);
                     break;
                 case Hear hear:
                     await context.WriteString("hear ");
@@ -68,9 +67,9 @@ namespace Alexa.NET.SkillFlow.TextGenerator
             context.CurrentLevel++;
         }
 
-        private Task RenderCondition(Condition ifInstructionCondition, TextGeneratorContext context)
+        private Task RenderCondition(Condition condition, TextGeneratorContext context)
         {
-            return Noop(context);
+            return TextCondition.Render(condition, context);
         }
 
         protected override async Task End(SceneInstructionContainer instructions, TextGeneratorContext context)
