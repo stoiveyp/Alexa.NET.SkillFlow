@@ -55,6 +55,7 @@ namespace Alexa.NET.SkillFlow.Generator
                 {
                     await GenerateComment(instruction, context);
                     await Generate(container, context);
+                    context.ClearLoop();
                     continue;
                 }
                 await GenerateComment(instruction, context);
@@ -78,6 +79,7 @@ namespace Alexa.NET.SkillFlow.Generator
                 {
                     await GenerateComment(instruction, context);
                     await Generate(container, context);
+                    context.ClearLoop();
                     continue;
                 }
                 await GenerateComment(instruction, context);

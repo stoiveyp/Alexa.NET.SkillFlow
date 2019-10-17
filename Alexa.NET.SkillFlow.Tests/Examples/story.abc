@@ -222,6 +222,5 @@
     *then
         // flag that player has heard this
         flag helped
-
         // go back to last scene.
         >> BACK
