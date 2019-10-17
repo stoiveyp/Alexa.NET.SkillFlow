@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Alexa.NET.SkillFlow.Conditions;
 using Alexa.NET.SkillFlow.Generator;
 using Alexa.NET.SkillFlow.Instructions;
+using Alexa.NET.SkillFlow.Terminators;
 
 namespace Alexa.NET.SkillFlow.TextGenerator
 {
@@ -63,7 +64,7 @@ namespace Alexa.NET.SkillFlow.TextGenerator
                     }
                     break;
             }
-            await context.WriteString(" {",true);
+            await context.WriteString(" {", true);
             context.CurrentLevel++;
         }
 
@@ -88,8 +89,42 @@ namespace Alexa.NET.SkillFlow.TextGenerator
         {
             switch (instruction)
             {
+                case Clear clear:
+                    return context.WriteLine($"clear {clear.Variable}");
+                case ClearAll all:
+                    return context.WriteLine("clear *");
+                case Decrease decrease:
+                    return context.WriteLine($"increase {decrease.Variable} by {decrease.Amount}");
+                case Flag flag:
+                    return context.WriteLine($"flag {flag.Variable}");
+                case GoTo goTo:
+                    return context.WriteLine($"-> {goTo.SceneName}");
+                case GoToAndReturn goToAndReturn:
+                    return context.WriteLine($"<-> {goToAndReturn}");
                 case Increase increase:
                     return context.WriteLine($"increase {increase.Variable} by {increase.Amount}");
+                case Set set:
+                    return context.WriteLine($"increase {set.Variable} to {set.Value}");
+                case SlotAssignment slot:
+                    return context.WriteLine($"slot {slot.SlotName} to '{slot.SlotType}'");
+                case Unflag unflag:
+                    return context.WriteLine($"unflag {unflag.Variable}");
+                case Back back:
+                    return context.WriteLine(">> BACK");
+                case End end:
+                    return context.WriteLine(">> END");
+                case Pause pause:
+                    return context.WriteLine(">> PAUSE");
+                case Repeat repeat:
+                    return context.WriteLine(">> REPEAT");
+                case Reprompt reprompt:
+                    return context.WriteLine(">> REPROMPT");
+                case Restart restart:
+                    return context.WriteLine(">> RESTART");
+                case Resume resume:
+                    return context.WriteLine(">> RESUME");
+                case Return returnvalue:
+                    return context.WriteLine(">> RETURN");
                 default:
                     return Noop(context);
 

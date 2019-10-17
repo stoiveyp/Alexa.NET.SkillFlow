@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow.Instructions
 {
-    public class ClearAll:SkillFlowComponent
+    public class ClearAll:SceneInstruction
     {
         public override string Type => nameof(ClearAll);
     }
