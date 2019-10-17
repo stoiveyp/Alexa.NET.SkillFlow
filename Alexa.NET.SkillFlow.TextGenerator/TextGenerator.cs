@@ -153,7 +153,12 @@ namespace Alexa.NET.SkillFlow.TextGenerator
         protected override Task End(Scene scene, TextGeneratorContext context)
         {
             context.CurrentLevel--;
-            return Noop(context);
+            if (!context.IsLast)
+            {
+                return context.WriteLine(string.Empty);
+            }
+
+            return base.End(scene, context);
         }
 
         protected override Task End(Text text, TextGeneratorContext context)

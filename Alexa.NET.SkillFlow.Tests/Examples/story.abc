@@ -46,7 +46,6 @@
 	*then
 		-> water
 
-
 @water
 	*say
 		How many bottles of water would you like to take with you?
@@ -88,7 +87,6 @@
 	*then
 		-> water
 
-
 @trailhead
 	*say
 		You fill up {bottles} water bottles and grab your gear. On the car ride out to the trailhead you listen to your favorite album of woodland sounds. You are so amped for a hike.
@@ -99,13 +97,11 @@
         }
         -> parking free
 
-
 @parking full
 	*say
 		You pull up to the trailhead and the parking lot is completely full. You drive around for a few minutes until you see a couple who are back from their hike and tossing their gear into the trunk of their car. You pull up and wait while they pack up. Eventually, they drive away and you grab their parking spot.
 	*then
 		-> start hike
-
 
 @parking free
 	*say
@@ -113,13 +109,11 @@
 	*then
 		-> start hike
 
-
 @start hike
 	*say
 		You start hiking up towards the alpine lake and after a short while you are feeling the effort in your legs and lungs. It feels good and you keep trekking through the trees, stopping occasionally for water or a quick bite of granola. Your mind begins to clear and you feel at one with nature. At about an hour in, the vegitation around you becomes shorter and more sparse and the trail connects with a stream that runs along your left. Then you see it, a little patch of blue expanse up ahead. Your legs are pretty tired, but you quicken your pace. The blue grows as you approach. Then, all of a sudden, the lake is right in front of you, surrounded on 3 sides by rocky peaks.
 	*then
 		-> rest
-
 
 @rest
 	*say
@@ -131,7 +125,6 @@
         hear call it a day and head down {
             -> head home
         }
-
 
 @head home
 	*say
@@ -148,7 +141,6 @@
             -> peak fail
         }
         -> peak
-
 
 @peak fail
 	*say
@@ -167,7 +159,7 @@
     *show
         // add visuals to every scene
         template: 'default'
-        background:'https://sfb-framework.s3.amazonaws.com/examples/images/alps.jpg'
+        background: 'https://sfb-framework.s3.amazonaws.com/examples/images/alps.jpg'
         title: 'Skill Flow Builder'
         subtitle: ''
 
@@ -187,7 +179,7 @@
             -> help
         }
         hear go back {
-            >> back
+            >> BACK
         }
         // if the player hasn't heard the help message yet and says something the framework didn't catch, play the help message
         if !helped {

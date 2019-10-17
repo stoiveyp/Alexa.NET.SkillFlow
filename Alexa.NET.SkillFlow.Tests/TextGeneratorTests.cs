@@ -18,7 +18,7 @@ namespace Alexa.NET.SkillFlow.Tests
             story.Scenes.Add("test", new Scene { Name = "test this thing" });
             story.Scenes.Add("test2", new Scene { Name = "test another thing" });
             var output = await OutputStory(story);
-            Assert.Equal("@test this thing\n@test another thing\n", output);
+            Assert.Equal("@test this thing\n\n@test another thing\n", output);
         }
 
         [Fact]
@@ -63,25 +63,19 @@ namespace Alexa.NET.SkillFlow.Tests
             Assert.Equal("@test this thing\n\t*show\n\t\ttemplate: 'default'\n", output);
         }
 
-        [Fact]
-        public Task IncreaseGeneratesProperly()
+        public static IEnumerable<object[]> TheoryData()
         {
-            return TestInstruction(new Increase("test", 5), "increase test by 5");
+            yield return new object[] {new Increase("test", 5), "increase test by 5"};
+            yield return new object[] {new Hear("go north", "go west"), "hear go north, go west {\n\t\t}"};
+            yield return new object[]
+            {
+                new If(ConditionParser.Parse("(false == test) == (5 > 3)")),
+                "if ( false == test ) == ( 5 > 3 ) {\n\t\t}"
+            };
         }
 
-        [Fact]
-        public Task HearGeneratesProperly()
-        {
-            return TestInstruction(new Hear("go north", "go west"), "hear go north, go west {\n\t\t}");
-        }
-
-        [Fact]
-        public Task IfGeneratesProperly()
-        {
-            var condition = ConditionParser.Parse("(false == test) == (5 > 3)");
-            return TestInstruction(new If(condition), "if ( false == test ) == ( 5 > 3 ) {\n\t\t}");
-        }
-
+        [Theory]
+        [MemberData(nameof(TheoryData))]
         public async Task TestInstruction(SceneInstruction instruction, string expectedOutput)
         {
             var story = new Story();

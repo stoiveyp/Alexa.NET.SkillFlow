@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Alexa.NET.SkillFlow.Generator
 {
-    public abstract class SkillFlowGenerator<TContext>
+    public abstract class SkillFlowGenerator<TContext> where TContext : SkillFlowContext
     {
         public Dictionary<Type, IComponentGenerator<TContext>> Extensions { get; } = new Dictionary<Type, IComponentGenerator<TContext>>();
 
@@ -28,10 +28,16 @@ namespace Alexa.NET.SkillFlow.Generator
         public async Task Generate(Story story, TContext context)
         {
             await Begin(story, context);
+            var index = 0;
             foreach (var scene in story.Scenes)
             {
+                context.SetLoop(index, story.Scenes.Count - 1);
+                await GenerateComment(scene.Value, context);
                 await Generate(scene.Value, context);
+                context.ClearLoop();
+                index++;
             }
+
             await End(story, context);
         }
         public async Task Generate(SceneInstructions instructions, TContext context)
@@ -41,15 +47,19 @@ namespace Alexa.NET.SkillFlow.Generator
                 return;
             }
             await Begin(instructions, context);
+            var instructionIndex = 0;
             foreach (var instruction in instructions.Instructions)
             {
+                context.SetLoop(instructionIndex, instructions.Instructions.Count - 1);
                 if (instruction is SceneInstructionContainer container)
                 {
+                    await GenerateComment(instruction, context);
                     await Generate(container, context);
                     continue;
                 }
                 await GenerateComment(instruction, context);
                 await Render(instruction, context);
+                context.ClearLoop();
             }
             await End(instructions, context);
         }
@@ -60,15 +70,19 @@ namespace Alexa.NET.SkillFlow.Generator
                 return;
             }
             await Begin(instructions, context);
+            var instructionIndex = 0;
             foreach (var instruction in instructions.Instructions)
             {
+                context.SetLoop(instructionIndex, instructions.Instructions.Count - 1);
                 if (instruction is SceneInstructionContainer container)
                 {
+                    await GenerateComment(instruction, context);
                     await Generate(container, context);
                     continue;
                 }
                 await GenerateComment(instruction, context);
                 await Render(instruction, context);
+                context.ClearLoop();
             }
             await End(instructions, context);
         }
@@ -92,24 +106,29 @@ namespace Alexa.NET.SkillFlow.Generator
                 return;
             }
 
+
             await Begin(visual, context);
             if (visual.Template != null)
             {
+                await GenerateComment(visual.Template, context);
                 await Render(visual.Template, context);
             }
 
             if (visual.Background != null)
             {
+                await GenerateComment(visual.Background, context);
                 await Render(visual.Background, context);
             }
 
             if (visual.Title != null)
             {
+                await GenerateComment(visual.Title, context);
                 await Render(visual.Title, context);
             }
 
             if (visual.Subtitle != null)
             {
+                await GenerateComment(visual.Subtitle, context);
                 await Render(visual.Subtitle, context);
             }
 
@@ -128,7 +147,6 @@ namespace Alexa.NET.SkillFlow.Generator
 
         private async Task Generate(Scene scene, TContext context)
         {
-            await GenerateComment(scene, context);
             await Begin(scene, context);
 
             await GenerateComment(scene.Say, context);
