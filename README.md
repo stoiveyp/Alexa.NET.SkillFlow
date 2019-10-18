@@ -1,2 +1,2 @@
 # Alexa.NET.SkillFlow
-A library for generating/interpreting SkillFlow and running those stories within Alexa.NET
+Small library containing the object model representing the SkillFlow story syntax
