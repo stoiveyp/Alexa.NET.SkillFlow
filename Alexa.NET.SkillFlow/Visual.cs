@@ -4,18 +4,16 @@ using System.Text;
 
 namespace Alexa.NET.SkillFlow
 {
-    public class Visual:SkillFlowComponent
+    public class Visual : SkillFlowComponent
     {
         public override string Type => nameof(Visual);
 
-        private VisualProperty _template;
-        private VisualProperty _background;
-        private VisualProperty _title;
-        private VisualProperty _subtitle;
-        public string Template => _template.Value;
-        public string Background => _background.Value;
-        public string Title => _title.Value;
-        public string Subtitle => _subtitle.Value;
+        public VisualProperty Template { get; set; }
+        public VisualProperty Background { get; set; }
+
+        public VisualProperty Title { get; set; }
+
+        public VisualProperty Subtitle { get; set; }
 
         public override void Add(SkillFlowComponent component)
         {
@@ -25,16 +23,16 @@ namespace Alexa.NET.SkillFlow
                     switch (property.Key)
                     {
                         case "template":
-                            _template = property;
+                            Template = property;
                             break;
                         case "background":
-                            _background = property;
+                            Background = property;
                             break;
                         case "title":
-                            _title = property;
+                            Title = property;
                             break;
                         case "subtitle":
-                            _subtitle = property;
+                            Subtitle = property;
                             break;
                         default:
                             throw this.InvalidComponent(component);

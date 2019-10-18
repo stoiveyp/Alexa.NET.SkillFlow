@@ -48,9 +48,10 @@ namespace Alexa.NET.SkillFlow.Tests
         public void CreatesAndReturnComponentCorrectly()
         {
             var interpreter = new GoToInterpreter();
-            var result = interpreter.Interpret("<->",
+            var result = interpreter.Interpret("<-> test this thing",
                 new SkillFlowInterpretationContext(new SkillFlowInterpretationOptions()));
-            Assert.IsType<GoToAndReturn>(result.Component);
+            var gtar = Assert.IsType<GoToAndReturn>(result.Component);
+            Assert.Equal("test this thing", gtar.SceneName);
         }
 
         [Fact]

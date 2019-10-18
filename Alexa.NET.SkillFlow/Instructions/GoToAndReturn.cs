@@ -6,7 +6,13 @@ namespace Alexa.NET.SkillFlow.Instructions
 {
     public class GoToAndReturn : SceneInstruction
     {
-        public override string Type => nameof(GoToAndReturn);
+        public GoToAndReturn() { }
 
+        public GoToAndReturn(string sceneName)
+        {
+            SceneName = sceneName;
+        }
+        public override string Type => nameof(GoToAndReturn);
+        public string SceneName { get; set; }
     }
 }
