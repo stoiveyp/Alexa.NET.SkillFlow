@@ -11,7 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.Generator", "Alexa.NET.SkillFlow.Generator\Alexa.NET.SkillFlow.Generator.csproj", "{16E7DE8E-90A3-4975-91BB-A1E7294468B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alexa.NET.SkillFlow.TextGenerator", "Alexa.NET.SkillFlow.TextGenerator\Alexa.NET.SkillFlow.TextGenerator.csproj", "{5806581C-A45A-4A37-886F-FF7A978A1BCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.TextGenerator", "Alexa.NET.SkillFlow.TextGenerator\Alexa.NET.SkillFlow.TextGenerator.csproj", "{5806581C-A45A-4A37-886F-FF7A978A1BCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alexa.NET.SkillFlow.CodeGenerator", "Alexa.NET.SkillFlow.CodeGenerator\Alexa.NET.SkillFlow.CodeGenerator.csproj", "{296239E3-5349-4C5E-A2B1-A90A17C89A73}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alexa.NET.SkillFlow.CodeOutput", "Alexa.NET.SkillFlow.CodeOutput\Alexa.NET.SkillFlow.CodeOutput.csproj", "{24AC135E-4ED0-41B5-A224-FE01783BBA29}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +43,14 @@ Global
 		{5806581C-A45A-4A37-886F-FF7A978A1BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5806581C-A45A-4A37-886F-FF7A978A1BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5806581C-A45A-4A37-886F-FF7A978A1BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{296239E3-5349-4C5E-A2B1-A90A17C89A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{296239E3-5349-4C5E-A2B1-A90A17C89A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{296239E3-5349-4C5E-A2B1-A90A17C89A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{296239E3-5349-4C5E-A2B1-A90A17C89A73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24AC135E-4ED0-41B5-A224-FE01783BBA29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24AC135E-4ED0-41B5-A224-FE01783BBA29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24AC135E-4ED0-41B5-A224-FE01783BBA29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24AC135E-4ED0-41B5-A224-FE01783BBA29}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
