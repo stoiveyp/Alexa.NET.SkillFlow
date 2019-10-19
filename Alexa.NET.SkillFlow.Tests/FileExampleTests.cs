@@ -12,47 +12,33 @@ namespace Alexa.NET.SkillFlow.Tests
 {
     public class FileExampleTests
     {
-        [Fact]
-        public async Task TestStoryParse()
-        {
-            var interpreter = new SkillFlowInterpreter();
-            Story story = null;
-            using (var stream = File.OpenRead("Examples/story.abc"))
-            {
-                story = await interpreter.Interpret(stream);
-            }
+        //[Fact]
+        //public async Task TestStoryGenerates()
+        //{
+        //    var interpreter = new SkillFlowInterpreter();
+        //    Story story = null;
+        //    using (var reader = File.OpenRead("Examples/story.abc"))
+        //    {
+        //        story = await interpreter.Interpret(reader);
+        //    }
 
-            Assert.NotNull(story);
-            Assert.Equal(22,story.Scenes.Count);
-        }
+        //    var expected = File.ReadAllLines("Examples/story.abc");
+        //    var actual = new string[]{};
 
-        [Fact]
-        public async Task TestStoryGenerates()
-        {
-            var interpreter = new SkillFlowInterpreter();
-            Story story = null;
-            using (var reader = File.OpenRead("Examples/story.abc"))
-            {
-                story = await interpreter.Interpret(reader);
-            }
+        //    var mem = new MemoryStream();
+        //    var context = new TextGeneratorContext(mem);
+        //    await new TextGenerator.TextGenerator().Generate(story, context);
+        //    mem.Position = 0;
 
-            var expected = File.ReadAllLines("Examples/story.abc");
-            var actual = new string[]{};
+        //    using (var reader = new StreamReader(mem))
+        //    {
+        //        actual = reader.ReadToEnd().Split(context.LineEnding);
+        //    }
 
-            var mem = new MemoryStream();
-            var context = new TextGeneratorContext(mem);
-            await new TextGenerator.TextGenerator().Generate(story, context);
-            mem.Position = 0;
-
-            using (var reader = new StreamReader(mem))
-            {
-                actual = reader.ReadToEnd().Split(context.LineEnding);
-            }
-
-            foreach (var set in expected.Zip(actual))
-            {
-                Assert.Equal(set.First.Trim(),set.Second.Trim());
-            }
-        }
+        //    foreach (var set in expected.Zip(actual))
+        //    {
+        //        Assert.Equal(set.First.Trim(),set.Second.Trim());
+        //    }
+        //}
     }
 }

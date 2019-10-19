@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Alexa.NET.SkillFlow.Generator\Alexa.NET.SkillFlow.Generator.csproj" />
-    <ProjectReference Include="..\Alexa.NET.SkillFlow.Interpreter\Alexa.NET.SkillFlow.Interpreter.csproj" />
     <ProjectReference Include="..\Alexa.NET.SkillFlow.TextGenerator\Alexa.NET.SkillFlow.TextGenerator.csproj" />
   </ItemGroup>
 

@@ -5,13 +5,11 @@ VisualStudioVersion = 16.0.29318.209
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow", "Alexa.NET.SkillFlow\Alexa.NET.SkillFlow.csproj", "{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.Interpreter", "Alexa.NET.SkillFlow.Interpreter\Alexa.NET.SkillFlow.Interpreter.csproj", "{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.Tests", "Alexa.NET.SkillFlow.Tests\Alexa.NET.SkillFlow.Tests.csproj", "{B5251AD6-B1A8-48D5-940A-7399931420B6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.Generator", "Alexa.NET.SkillFlow.Generator\Alexa.NET.SkillFlow.Generator.csproj", "{16E7DE8E-90A3-4975-91BB-A1E7294468B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alexa.NET.SkillFlow.TextGenerator", "Alexa.NET.SkillFlow.TextGenerator\Alexa.NET.SkillFlow.TextGenerator.csproj", "{5806581C-A45A-4A37-886F-FF7A978A1BCC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Alexa.NET.SkillFlow.TextGenerator", "Alexa.NET.SkillFlow.TextGenerator\Alexa.NET.SkillFlow.TextGenerator.csproj", "{5806581C-A45A-4A37-886F-FF7A978A1BCC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E14CDBD-9CCC-422C-9610-D78BFDB0C302}.Release|Any CPU.Build.0 = Release|Any CPU
-		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{812913E3-ED5E-4E4B-9EBA-8E5601D6234D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5251AD6-B1A8-48D5-940A-7399931420B6}.Release|Any CPU.ActiveCfg = Release|Any CPU

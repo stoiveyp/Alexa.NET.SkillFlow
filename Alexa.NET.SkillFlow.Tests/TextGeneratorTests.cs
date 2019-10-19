@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Alexa.NET.SkillFlow.Instructions;
-using Alexa.NET.SkillFlow.Interpreter;
 using Alexa.NET.SkillFlow.TextGenerator;
 using Xunit;
 
@@ -63,29 +62,29 @@ namespace Alexa.NET.SkillFlow.Tests
             Assert.Equal("@test this thing\n\t*show\n\t\ttemplate: 'default'\n", output);
         }
 
-        public static IEnumerable<object[]> TheoryData()
-        {
-            yield return new object[] {new Increase("test", 5), "increase test by 5"};
-            yield return new object[] {new Hear("go north", "go west"), "hear go north, go west {\n\t\t}"};
-            yield return new object[]
-            {
-                new If(ConditionParser.Parse("(false == test) == (5 > 3)")),
-                "if ( false == test ) == ( 5 > 3 ) {\n\t\t}"
-            };
-        }
+        //public static IEnumerable<object[]> TheoryData()
+        //{
+        //    yield return new object[] {new Increase("test", 5), "increase test by 5"};
+        //    yield return new object[] {new Hear("go north", "go west"), "hear go north, go west {\n\t\t}"};
+        //    yield return new object[]
+        //    {
+        //        new If(ConditionParser.Parse("(false == test) == (5 > 3)")),
+        //        "if ( false == test ) == ( 5 > 3 ) {\n\t\t}"
+        //    };
+        //}
 
-        [Theory]
-        [MemberData(nameof(TheoryData))]
-        public async Task TestInstruction(SceneInstruction instruction, string expectedOutput)
-        {
-            var story = new Story();
-            var scene = new Scene { Name = "test this thing" };
-            scene.Add(new SceneInstructions());
-            scene.Instructions.Add(instruction);
-            story.Scenes.Add("test", scene);
-            var output = await OutputStory(story);
-            Assert.Equal($"@test this thing\n\t*then\n\t\t{expectedOutput}\n", output);
-        }
+        //[Theory]
+        //[MemberData(nameof(TheoryData))]
+        //public async Task TestInstruction(SceneInstruction instruction, string expectedOutput)
+        //{
+        //    var story = new Story();
+        //    var scene = new Scene { Name = "test this thing" };
+        //    scene.Add(new SceneInstructions());
+        //    scene.Instructions.Add(instruction);
+        //    story.Scenes.Add("test", scene);
+        //    var output = await OutputStory(story);
+        //    Assert.Equal($"@test this thing\n\t*then\n\t\t{expectedOutput}\n", output);
+        //}
 
         private async Task<string> OutputStory(Story story)
         {
